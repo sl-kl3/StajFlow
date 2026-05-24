@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="dashboard-grid">
+    <div class="card glass">
+        <h3>Staj Başvuru Durumu</h3>
+        {% if apply %}
+            <div class="status-box">
+                <p>Şirket: <strong>{{ apply.company_name }}</strong></p>
+                <p>Durum: <span class="badge">{{ apply.status }}</span></p>
+            </div>
+        {% else %}
+            <form action="/apply_internship" method="POST">
+                <input type="text" name="company" placeholder="Şirket Adı" required>
+                <input type="date" name="start_date" required>
+                <button type="submit" class="btn-main">Staj Başlat</button>
+            </form>
+        {% endif %}
+    </div>
+
+    <div class="card glass">
+        <h3>Günlük Kaydı Oluştur</h3>
+        <form action="/add_log" method="POST">
+            <textarea name="content" placeholder="Bugün neler yaptın?"></textarea>
+            <button type="submit" class="btn-main">Kaydet</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

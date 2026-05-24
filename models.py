@@ -1,0 +1,28 @@
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin
+from datetime import datetime
+
+db = SQLAlchemy()
+
+class User(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(200), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    role = db.Column(db.String(20), nullable=False) # admin, danisman, ogrenci
+
+class Internship(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    company_name = db.Column(db.String(100), nullable=False)
+    internship_type = db.Column(db.String(50)) # Zorunlu / Gönüllü
+    start_date = db.Column(db.String(50))
+    status = db.Column(db.String(20), default='Onay Bekliyor')
+
+class DailyLog(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    student_name = db.Column(db.String(100))
+    date = db.Column(db.DateTime, default=datetime.utcnow)
+    content = db.Column(db.Text, nullable=False)
+    status = db.Column(db.String(20), default='Beklemede')

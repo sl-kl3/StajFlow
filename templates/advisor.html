@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Onay Bekleyen İşlemler</h2>
+
+<div class="section">
+    <h3>Staj Başvuruları</h3>
+    {% for a in applies %}
+    <div class="action-card glass">
+        <p>{{ a.student_id }} nolu öğrenci -> <b>{{ a.company_name }}</b></p>
+        <a href="/action/apply/{{a.id}}/ok" class="btn-ok">Onayla</a>
+        <a href="/action/apply/{{a.id}}/no" class="btn-no">Reddet</a>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="section" style="margin-top: 30px;">
+    <h3>Günlük Onayları</h3>
+    {% for l in logs %}
+    <div class="action-card glass">
+        <p><b>{{ l.student_name }}:</b> {{ l.content[:50] }}...</p>
+        <a href="/action/log/{{l.id}}/ok" class="btn-ok">Onayla</a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">🚀 STAJ<span>FLOW</span></div>
+        <nav>
+            <a href="/dashboard" class="nav-item">📊 Genel Bakış</a>
+            {% if current_user.role == 'ogrenci' %}
+            <a href="#" class="nav-item">📝 Yeni Başvuru</a>
+            {% endif %}
+            <a href="/logout" class="nav-item logout">🚪 Güvenli Çıkış</a>
+        </nav>
+        <div class="user-profile">
+            <p>{{ current_user.name }}</p>
+            <span>{{ current_user.role|upper }}</span>
+        </div>
+    </div>
+    <div class="main-content">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

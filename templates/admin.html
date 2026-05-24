@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Sistem Yönetimi</h2>
+<div class="user-list glass">
+    <h3>Kayıtlı Kullanıcılar</h3>
+    {% for user in users %}
+    <div class="user-item">
+        {{ user.name }} - <b>{{ user.role }}</b> ({{ user.email }})
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

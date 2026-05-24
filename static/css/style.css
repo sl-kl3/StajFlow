@@ -1,0 +1,85 @@
+:root {
+    --primary-color: #7d2ae8;
+    --bg-color: #f4f7fe;
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --text-color: #333;
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+}
+
+.glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+}
+
+/* Login Page Styles */
+.login-page {
+    justify-content: center;
+    align-items: center;
+}
+
+.login-container {
+    padding: 40px;
+    width: 350px;
+    text-align: center;
+}
+
+.logo span {
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #6a22c4;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    width: 250px;
+    height: 90vh;
+    margin: 20px;
+    padding: 20px;
+    color: #444;
+}
+
+.content {
+    flex: 1;
+    padding: 40px;
+    color: white;
+}
+
+.error-msg {
+    color: #ff4d4d;
+    font-size: 14px;
+    margin-top: 10px;
+}

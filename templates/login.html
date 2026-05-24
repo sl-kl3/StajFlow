@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StajFlow | Giriş Yap</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="mor-tema login-page">
+    <div class="login-container glass">
+        <h2 class="logo">STAJ<span>FLOW</span></h2>
+        <p>Hesabınıza giriş yapın</p>
+        
+        <form method="POST">
+            <div class="input-group">
+                <input type="email" name="email" placeholder="e-posta" required>
+            </div>
+            <div class="input-group">
+                <input type="password" name="password" placeholder="şifre" required>
+            </div>
+            <button type="submit" class="btn-primary">Giriş Yap</button>
+            <a href="#" class="forgot-link">Şifremi Unuttum</a>
+        </form>
+        
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for message in messages %}
+              <p class="error-msg">{{ message }}</p>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+    </div>
+</body>
+</html>
