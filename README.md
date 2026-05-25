@@ -1,12 +1,12 @@
 # StajFlow
 
-Üniversite staj sürecini yöneten web uygulaması: **admin**, **danışman** ve **öğrenci** rolleri.
+Staj takip sistemi — **StajFlow (GitHub)** + **Staj Takip v3** + **HTML prototip** birleşimi.
 
-## Özellikler
+## Roller
 
-- **Öğrenci:** Staj başvurusu, onay sonrası günlük kaydı, durum takibi
-- **Danışman:** Başvuru ve günlük onay/red
-- **Admin:** Kullanıcı ekleme/silme, sistem istatistikleri
+- **Öğrenci** — staj başvurusu, günlük kaydı
+- **Danışman** — başvuru ve günlük onayı, istatistik paneli
+- **Admin** — kullanıcı yönetimi
 
 ## Kurulum
 
@@ -18,24 +18,26 @@ python setup_db.py
 python app.py
 ```
 
-Tarayıcı: http://127.0.0.1:5000
+http://127.0.0.1:5000
 
-## Demo hesaplar
+> İlk çalıştırmada `instance/stajflow.db` otomatik oluşur ve demo hesaplar eklenir.
+
+## Demo giriş (danışman dahil)
 
 | Rol | E-posta | Şifre |
 |-----|---------|-------|
 | Admin | admin@staj.edu.tr | admin123 |
 | Danışman | hoca@staj.edu.tr | hoca123 |
+| Danışman (v3) | ahmet@staj.edu.tr | dan123 |
 | Öğrenci | ogr@staj.edu.tr | ogr123 |
 
-## GitHub
+## Git (ekip)
 
 ```bash
 git pull origin main
-# degisikliklerden sonra
 git add .
-git commit -m "mesaj"
+git commit -m "aciklama"
 git push origin main
 ```
 
-Repo: https://github.com/sl-kl3/StajFlow
+https://github.com/sl-kl3/StajFlow
