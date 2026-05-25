@@ -3,32 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StajFlow | Giriş Yap</title>
+    <title>StajFlow | Giriş</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="mor-tema login-page">
+<body class="login-page">
     <div class="login-container glass">
-        <h2 class="logo">STAJ<span>FLOW</span></h2>
-        <p>Hesabınıza giriş yapın</p>
-        
-        <form method="POST">
+        <h1 class="logo">STAJ<span>FLOW</span></h1>
+        <p class="login-sub">Staj takip ve onay sistemi</p>
+
+        <form method="POST" class="login-form">
             <div class="input-group">
-                <input type="email" name="email" placeholder="e-posta" required>
+                <label for="email">E-posta</label>
+                <input type="email" id="email" name="email" placeholder="ornek@staj.edu.tr" required>
             </div>
             <div class="input-group">
-                <input type="password" name="password" placeholder="şifre" required>
+                <label for="password">Şifre</label>
+                <input type="password" id="password" name="password" placeholder="••••••••" required>
             </div>
             <button type="submit" class="btn-primary">Giriş Yap</button>
-            <a href="#" class="forgot-link">Şifremi Unuttum</a>
         </form>
-        
-        {% with messages = get_flashed_messages() %}
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
           {% if messages %}
-            {% for message in messages %}
-              <p class="error-msg">{{ message }}</p>
+            {% for category, message in messages %}
+              <p class="flash flash-{{ category }}">{{ message }}</p>
             {% endfor %}
           {% endif %}
         {% endwith %}
+
+        <div class="demo-box glass-inner">
+            <p><strong>Demo hesaplar</strong></p>
+            <p>Admin: admin@staj.edu.tr / admin123</p>
+            <p>Danışman: hoca@staj.edu.tr / hoca123</p>
+            <p>Öğrenci: ogr@staj.edu.tr / ogr123</p>
+        </div>
     </div>
 </body>
 </html>

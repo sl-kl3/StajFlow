@@ -1,28 +1,85 @@
 {% extends "base.html" %}
 {% block content %}
+<header class="page-header">
+    <h1>Öğrenci Paneli</h1>
+    <p>Staj başvurusu ve günlük kayıtlarınız</p>
+</header>
+
 <div class="dashboard-grid">
-    <div class="card glass">
-        <h3>Staj Başvuru Durumu</h3>
+    <section class="card glass">
+        <h2>Staj Başvurusu</h2>
         {% if apply %}
             <div class="status-box">
-                <p>Şirket: <strong>{{ apply.company_name }}</strong></p>
-                <p>Durum: <span class="badge">{{ apply.status }}</span></p>
+                <p><span class="label">Şirket</span> <strong>{{ apply.company_name }}</strong></p>
+                <p><span class="label">Tür</span> {{ apply.internship_type }}</p>
+                <p><span class="label">Başlangıç</span> {{ apply.start_date }}</p>
+                <p><span class="label">Durum</span>
+                    <span class="badge badge-{{ apply.status|lower|replace(' ', '-') }}">{{ apply.status }}</span>
+                </p>
             </div>
+            {% if apply.status == 'Reddedildi' %}
+            <p class="hint">Başvurunuz reddedildi. Yeni başvuru gönderebilirsiniz.</p>
+            <form action="{{ url_for('apply') }}" method="POST" class="stack-form">
+                <input type="text" name="company" placeholder="Şirket adı" required>
+                <select name="type" required>
+                    <option value="Zorunlu">Zorunlu Staj</option>
+                    <option value="Gönüllü">Gönüllü Staj</option>
+                </select>
+                <input type="date" name="start" required>
+                <button type="submit" class="btn-main">Yeni Başvuru Gönder</button>
+            </form>
+            {% endif %}
         {% else %}
-            <form action="/apply_internship" method="POST">
-                <input type="text" name="company" placeholder="Şirket Adı" required>
-                <input type="date" name="start_date" required>
-                <button type="submit" class="btn-main">Staj Başlat</button>
+            <form action="{{ url_for('apply') }}" method="POST" class="stack-form">
+                <input type="text" name="company" placeholder="Şirket adı" required>
+                <select name="type" required>
+                    <option value="Zorunlu">Zorunlu Staj</option>
+                    <option value="Gönüllü">Gönüllü Staj</option>
+                </select>
+                <input type="date" name="start" required>
+                <button type="submit" class="btn-main">Başvuru Gönder</button>
             </form>
         {% endif %}
-    </div>
+    </section>
 
-    <div class="card glass">
-        <h3>Günlük Kaydı Oluştur</h3>
-        <form action="/add_log" method="POST">
-            <textarea name="content" placeholder="Bugün neler yaptın?"></textarea>
-            <button type="submit" class="btn-main">Kaydet</button>
+    <section class="card glass">
+        <h2>Yeni Günlük Kaydı</h2>
+        {% if apply and apply.status == 'Onaylandı' %}
+        <form action="{{ url_for('add_log') }}" method="POST" class="stack-form">
+            <textarea name="content" rows="5" placeholder="Bugün stajda neler yaptınız?" required></textarea>
+            <button type="submit" class="btn-main">Kaydı Gönder</button>
         </form>
-    </div>
+        {% else %}
+        <p class="hint">Günlük eklemek için staj başvurunuzun onaylanması gerekir.</p>
+        {% endif %}
+    </section>
 </div>
+
+<section class="card glass full-width">
+    <h2>Günlük Kayıtlarım</h2>
+    {% if logs %}
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Tarih</th>
+                    <th>İçerik</th>
+                    <th>Durum</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                    <td>{{ log.date.strftime('%d.%m.%Y %H:%M') }}</td>
+                    <td>{{ log.content }}</td>
+                    <td><span class="badge badge-{{ log.status|lower }}">{{ log.status }}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="empty">Henüz günlük kaydınız yok.</p>
+    {% endif %}
+</section>
 {% endblock %}

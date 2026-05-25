@@ -1,25 +1,71 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>Onay Bekleyen İşlemler</h2>
+<header class="page-header">
+    <h1>Danışman Paneli</h1>
+    <p>Bekleyen başvuru ve günlük onayları</p>
+</header>
 
-<div class="section">
-    <h3>Staj Başvuruları</h3>
-    {% for a in applies %}
-    <div class="action-card glass">
-        <p>{{ a.student_id }} nolu öğrenci -> <b>{{ a.company_name }}</b></p>
-        <a href="/action/apply/{{a.id}}/ok" class="btn-ok">Onayla</a>
-        <a href="/action/apply/{{a.id}}/no" class="btn-no">Reddet</a>
-    </div>
-    {% endfor %}
+<div class="dashboard-grid">
+    <section class="card glass">
+        <h2>Staj Başvuruları</h2>
+        {% if applies %}
+            {% for a in applies %}
+            <div class="action-card">
+                <p><strong>{{ a.student.name if a.student else 'Öğrenci' }}</strong></p>
+                <p>{{ a.company_name }} · {{ a.internship_type }} · {{ a.start_date }}</p>
+                <div class="action-btns">
+                    <a href="{{ url_for('action_apply', apply_id=a.id, action='ok') }}" class="btn-ok">Onayla</a>
+                    <a href="{{ url_for('action_apply', apply_id=a.id, action='no') }}" class="btn-no">Reddet</a>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="empty">Bekleyen staj başvurusu yok.</p>
+        {% endif %}
+    </section>
+
+    <section class="card glass">
+        <h2>Günlük Onayları</h2>
+        {% if logs %}
+            {% for l in logs %}
+            <div class="action-card">
+                <p><strong>{{ l.student_name }}</strong> · {{ l.date.strftime('%d.%m.%Y') }}</p>
+                <p class="log-preview">{{ l.content }}</p>
+                <div class="action-btns">
+                    <a href="{{ url_for('action_log', log_id=l.id, action='ok') }}" class="btn-ok">Onayla</a>
+                    <a href="{{ url_for('action_log', log_id=l.id, action='no') }}" class="btn-no">Reddet</a>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="empty">Bekleyen günlük kaydı yok.</p>
+        {% endif %}
+    </section>
 </div>
 
-<div class="section" style="margin-top: 30px;">
-    <h3>Günlük Onayları</h3>
-    {% for l in logs %}
-    <div class="action-card glass">
-        <p><b>{{ l.student_name }}:</b> {{ l.content[:50] }}...</p>
-        <a href="/action/log/{{l.id}}/ok" class="btn-ok">Onayla</a>
+{% if approved_logs %}
+<section class="card glass full-width">
+    <h2>Son İşlenen Günlükler</h2>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Öğrenci</th>
+                    <th>Tarih</th>
+                    <th>Durum</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for l in approved_logs %}
+                <tr>
+                    <td>{{ l.student_name }}</td>
+                    <td>{{ l.date.strftime('%d.%m.%Y %H:%M') }}</td>
+                    <td><span class="badge badge-{{ l.status|lower }}">{{ l.status }}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-    {% endfor %}
-</div>
+</section>
+{% endif %}
 {% endblock %}
