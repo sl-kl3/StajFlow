@@ -20,7 +20,9 @@
                     <i class="ti ti-layout-dashboard"></i> Genel Bakış
                 </a>
                 {% if current_user.role == 'ogrenci' or current_user.role == 'student' %}
-                <span class="nav-item nav-hint"><i class="ti ti-building"></i> Şirket ilanları</span>
+                <a href="{{ url_for('dashboard') }}#ilanlar" class="nav-item">
+                    <i class="ti ti-building"></i> Staj İlanları
+                </a>
                 {% elif current_user.role == 'danisman' or current_user.role == 'danishman' %}
                 <span class="nav-item nav-hint"><i class="ti ti-checklist"></i> Başvuru & günlük onayı</span>
                 {% elif current_user.role == 'admin' %}

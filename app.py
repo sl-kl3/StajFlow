@@ -159,7 +159,10 @@ def dashboard():
     )
     for p in programs:
         p.slots_left = program_slots_left(p)
-    return render_template('student.html', logs=logs, apply=apply, programs=programs)
+    can_apply = apply is None or apply.status == 'Reddedildi'
+    return render_template(
+        'student.html', logs=logs, apply=apply, programs=programs, can_apply=can_apply
+    )
 
 
 @app.route('/apply_program/<int:program_id>', methods=['POST'])

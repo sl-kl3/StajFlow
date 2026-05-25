@@ -126,33 +126,6 @@ def ensure_sample_data():
         ogr.student_no = '2021001001'
         ogr.department = 'Bilgisayar Mühendisliği'
 
-    prog = InternshipProgram.query.filter_by(title='Backend Geliştirme Stajı').first()
-    if prog and not Internship.query.filter_by(student_id=ogr.id).first():
-        db.session.add(Internship(
-            student_id=ogr.id,
-            program_id=prog.id,
-            company_name=prog.company.name,
-            internship_type=prog.internship_type,
-            start_date=prog.start_date,
-            end_date=prog.end_date,
-            description=prog.description,
-            status='Onaylandı',
-        ))
-
-    if not DailyLog.query.filter_by(student_id=ogr.id).first():
-        db.session.add(DailyLog(
-            student_id=ogr.id,
-            student_name=ogr.name,
-            content='Proje ortamı kuruldu, ekip ile tanışma toplantısı yapıldı.',
-            status='Beklemede',
-        ))
-        db.session.add(DailyLog(
-            student_id=ogr.id,
-            student_name=ogr.name,
-            content='İlk sprint görevleri tamamlandı.',
-            status='Onaylandı',
-        ))
-
     db.session.commit()
 
 
