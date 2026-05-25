@@ -15,12 +15,16 @@ ROLE_ALIASES = {
 DEMO_USERS = [
     ('admin@staj.edu.tr', 'admin123', 'Sistem Yöneticisi', 'admin'),
     ('hoca@staj.edu.tr', 'hoca123', 'Dr. Ahmet Yılmaz', 'danisman'),
-    ('ahmet@staj.edu.tr', 'dan123', 'Ahmet Yıldız', 'danisman'),
     ('ogr@staj.edu.tr', 'ogr123', 'Ayşe Demir', 'ogrenci'),
-    ('ayse@ogrenci.edu.tr', 'ogr123', 'Ayşe Yılmaz', 'ogrenci'),
     ('ali@staj.edu.tr', 'ali123', 'Ali Kaya', 'ogrenci'),
-    ('mehmet@ogrenci.edu.tr', 'ogr123', 'Mehmet Demir', 'ogrenci'),
 ]
+
+# Eski v3 birleştirmesinden kalan, artık kullanılmayan hesaplar
+LEGACY_REMOVE_EMAILS = (
+    'ahmet@staj.edu.tr',
+    'ayse@ogrenci.edu.tr',
+    'mehmet@ogrenci.edu.tr',
+)
 
 
 def normalize_role(role):
@@ -33,8 +37,21 @@ def is_danisman(role):
     return normalize_role(role) == 'danisman'
 
 
+def remove_legacy_users():
+    """İkinci danışman vb. eski demo hesaplarını kaldırır."""
+    for email in LEGACY_REMOVE_EMAILS:
+        user = User.query.filter_by(email=email).first()
+        if not user:
+            continue
+        DailyLog.query.filter_by(student_id=user.id).delete()
+        Internship.query.filter_by(student_id=user.id).delete()
+        db.session.delete(user)
+    db.session.commit()
+
+
 def ensure_demo_users():
     """Demo hesapları oluşturur veya şifre/rolünü düzeltir."""
+    remove_legacy_users()
     changed = False
     for email, pwd, name, role in DEMO_USERS:
         role = normalize_role(role)
@@ -71,9 +88,7 @@ def ensure_sample_data():
     """Örnek başvuru ve günlük yoksa ekle."""
     for email, no, dept in (
         ('ogr@staj.edu.tr', '2021001001', 'Bilgisayar Mühendisliği'),
-        ('ayse@ogrenci.edu.tr', '2021001001', 'Bilgisayar Mühendisliği'),
         ('ali@staj.edu.tr', '2021001002', 'Bilgisayar Mühendisliği'),
-        ('mehmet@ogrenci.edu.tr', '2021001003', 'Bilgisayar Mühendisliği'),
     ):
         u = User.query.filter_by(email=email).first()
         if u and not u.student_no:

@@ -9,4 +9,4 @@ with app.app_context():
     ensure_demo_users()
     ensure_sample_data()
     print('Veritabani sifirlandi ve demo veriler yuklendi.')
-    print('Danisman: hoca@staj.edu.tr / hoca123  veya  ahmet@staj.edu.tr / dan123')
+    print('Danisman: hoca@staj.edu.tr / hoca123')

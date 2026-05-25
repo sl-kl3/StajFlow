@@ -68,7 +68,7 @@ def login():
             flash(f'Hoş geldin, {user.name}!', 'success')
             return redirect(url_for('dashboard'))
 
-        flash('E-posta veya şifre hatalı. Demo: hoca@staj.edu.tr / hoca123 veya ahmet@staj.edu.tr / dan123', 'error')
+        flash('E-posta veya şifre hatalı. Danışman: hoca@staj.edu.tr / hoca123', 'error')
 
     return render_template('login.html')
 

@@ -1,6 +1,6 @@
 # StajFlow
 
-Staj takip sistemi — **StajFlow (GitHub)** + **Staj Takip v3** + **HTML prototip** birleşimi.
+Staj takip sistemi — öğrenci, **tek danışman** paneli ve admin yönetimi.
 
 ## Roller
 
@@ -28,7 +28,6 @@ http://127.0.0.1:5000
 |-----|---------|-------|
 | Admin | admin@staj.edu.tr | admin123 |
 | Danışman | hoca@staj.edu.tr | hoca123 |
-| Danışman (v3) | ahmet@staj.edu.tr | dan123 |
 | Öğrenci | ogr@staj.edu.tr | ogr123 |
 
 ## Git (ekip)
