@@ -27,7 +27,7 @@ body {
     min-height: 100vh;
 }
 
-/* ── Login (HTML prototip + v3) ── */
+/* ── Login ── */
 .login-page { min-height: 100vh; }
 
 .login-split {
@@ -166,23 +166,22 @@ textarea { min-height: 110px; resize: vertical; }
     gap: 8px;
 }
 
-.demo-box {
+.login-info {
     margin-top: 22px;
     padding: 14px;
     background: rgba(124,58,237,0.05);
-    border: 1px dashed rgba(124,58,237,0.25);
+    border: 1px solid rgba(124,58,237,0.15);
     border-radius: 12px;
 }
 
-.demo-title {
+.login-info-title {
     font-size: 12px;
-    font-weight: 700;
-    color: var(--p600);
-    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--text2);
     margin-bottom: 10px;
 }
 
-.demo-row {
+.login-info-row {
     display: flex;
     justify-content: space-between;
     gap: 8px;
@@ -191,11 +190,22 @@ textarea { min-height: 110px; resize: vertical; }
     border-bottom: 1px solid rgba(124,58,237,0.08);
 }
 
-.demo-row code {
+.login-info-row code {
     font-size: 11px;
     color: var(--p600);
     text-align: right;
 }
+
+.info-card { border-left: 4px solid var(--p500); }
+
+.info-list {
+    margin: 0;
+    padding-left: 20px;
+    color: var(--text2);
+    line-height: 1.7;
+}
+
+.info-list li { margin-bottom: 10px; }
 
 /* ── App shell (v3 sidebar) ── */
 .app { display: flex; min-height: 100vh; }

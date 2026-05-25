@@ -8,5 +8,5 @@ with app.app_context():
     db.create_all()
     ensure_demo_users()
     ensure_sample_data()
-    print('Veritabani sifirlandi ve demo veriler yuklendi.')
+    print('Veritabani hazir.')
     print('Danisman: hoca@staj.edu.tr / hoca123')

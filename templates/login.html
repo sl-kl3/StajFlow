@@ -12,26 +12,26 @@
     <div class="login-split">
         <section class="login-hero">
             <div class="login-logo">STAJ<span>FLOW</span></div>
-            <h1>Staj sürecini <em>tek panelden</em> yönet</h1>
-            <p>Öğrenci başvurusu, danışman onayı ve admin yönetimi — tek panel.</p>
+            <h1>Staj başvuruları <em>buradan</em> yapılıyor</h1>
+            <p>Firmaların açtığı staj ilanlarına başvurursun. Danışmanın onaylar, staj boyunca günlük tutarsın.</p>
             <div class="login-badges">
-                <span>Öğrenci</span>
-                <span>Danışman</span>
-                <span>Admin</span>
+                <span>Başvuru</span>
+                <span>Onay</span>
+                <span>Günlük</span>
             </div>
         </section>
 
         <section class="login-panel">
             <div class="login-card">
-                <h2>Hoş Geldiniz</h2>
-                <p class="login-sub">Hesabınıza giriş yapın</p>
+                <h2>Giriş</h2>
+                <p class="login-sub">Okul e-postan ve şifrenle devam et</p>
 
                 <form method="POST" class="login-form">
                     <div class="input-group">
                         <label for="email">E-posta</label>
                         <div class="input-wrap">
                             <i class="ti ti-mail"></i>
-                            <input type="email" id="email" name="email" placeholder="hoca@staj.edu.tr" required autocomplete="email">
+                            <input type="email" id="email" name="email" placeholder="ogr@staj.edu.tr" required autocomplete="email">
                         </div>
                     </div>
                     <div class="input-group">
@@ -52,12 +52,11 @@
                   {% endif %}
                 {% endwith %}
 
-                <div class="demo-box">
-                    <p class="demo-title">Demo hesaplar</p>
-                    <div class="demo-row"><span>Admin</span><code>admin@staj.edu.tr / admin123</code></div>
-                    <div class="demo-row"><span>Danışman</span><code>hoca@staj.edu.tr / hoca123</code></div>
-                    <div class="demo-row"><span>Öğrenci</span><code>ogr@staj.edu.tr / ogr123</code></div>
-                    <p class="hint" style="margin-top:10px;font-size:11px;">Hocaya sunum: 3 demo hesap yeterli.</p>
+                <div class="login-info">
+                    <p class="login-info-title">Test için</p>
+                    <div class="login-info-row"><span>Yönetici</span><code>admin@staj.edu.tr / admin123</code></div>
+                    <div class="login-info-row"><span>Danışman</span><code>hoca@staj.edu.tr / hoca123</code></div>
+                    <div class="login-info-row"><span>Öğrenci</span><code>ogr@staj.edu.tr / ogr123</code></div>
                 </div>
             </div>
         </section>

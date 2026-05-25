@@ -3,7 +3,7 @@
 <header class="topbar">
     <div>
         <h1 class="topbar-title">Öğrenci <span>Paneli</span></h1>
-        <p class="topbar-date">Açık staj programlarından seçim yapın</p>
+        <p class="topbar-date">Şirket ilanlarına başvur</p>
     </div>
 </header>
 
@@ -33,8 +33,8 @@
 
 {% if not apply or apply.status == 'Reddedildi' %}
 <section class="card full-width">
-    <h2><i class="ti ti-building"></i> Açık Staj Programları</h2>
-    <p class="hint">Şirketlerin yayınladığı ilanlardan birini seçin — danışman onaylar.</p>
+    <h2><i class="ti ti-building"></i> Şirket Staj İlanları</h2>
+    <p class="hint">Başvurmak istediğin şirketin ilanına tıkla. Danışmanın onayından sonra staja başlarsın.</p>
     {% if programs %}
     <div class="program-grid">
         {% for p in programs %}
@@ -60,7 +60,7 @@
         {% endfor %}
     </div>
     {% else %}
-    <p class="empty">Henüz açık staj programı yok. Admin şirket ve program eklemeli.</p>
+    <p class="empty">Şu an yayında ilan yok. Bölüm yöneticisi yeni ilan ekleyince burada görünür.</p>
     {% endif %}
 </section>
 {% endif %}
