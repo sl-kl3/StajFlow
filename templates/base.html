@@ -24,7 +24,12 @@
                     <i class="ti ti-building"></i> Staj İlanları
                 </a>
                 {% elif current_user.role == 'danisman' or current_user.role == 'danishman' %}
-                <span class="nav-item nav-hint"><i class="ti ti-checklist"></i> Başvuru & günlük onayı</span>
+                <a href="{{ url_for('dashboard') }}#onay-basvuru" class="nav-item">
+                    <i class="ti ti-briefcase"></i> Başvuru Onayı
+                </a>
+                <a href="{{ url_for('dashboard') }}#onay-gunluk" class="nav-item">
+                    <i class="ti ti-notebook"></i> Günlük Onayı
+                </a>
                 {% elif current_user.role == 'admin' %}
                 <span class="nav-item nav-hint"><i class="ti ti-building"></i> Şirket & ilan</span>
                 {% endif %}

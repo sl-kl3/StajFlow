@@ -1,138 +1,177 @@
 {% extends "base.html" %}
 {% block content %}
-<header class="topbar">
+<header class="topbar advisor-topbar">
     <div>
-        <h1 class="topbar-title">Danışman <span>Paneli</span></h1>
+        <h1 class="topbar-title">Danışman <span>Onay Paneli</span></h1>
         <p class="topbar-date" id="today-date"></p>
     </div>
+    {% if stats.toplam_bekleyen > 0 %}
+    <div class="pending-pill">
+        <i class="ti ti-bell"></i> {{ stats.toplam_bekleyen }} onay bekliyor
+    </div>
+    {% else %}
+    <div class="pending-pill done">
+        <i class="ti ti-check"></i> Onay kuyruğu boş
+    </div>
+    {% endif %}
 </header>
 
 <div class="stats-grid">
     <div class="stat-card warn">
-        <div class="stat-icon"><i class="ti ti-clock"></i></div>
-        <div class="stat-num">{{ stats.bekleyen }}</div>
-        <div class="stat-label">Bekleyen Başvuru</div>
+        <div class="stat-num">{{ stats.bekleyen_basvuru }}</div>
+        <div class="stat-label">Bekleyen başvuru</div>
+    </div>
+    <div class="stat-card warn">
+        <div class="stat-num">{{ stats.bekleyen_gunluk }}</div>
+        <div class="stat-label">Bekleyen günlük</div>
     </div>
     <div class="stat-card success">
-        <div class="stat-icon"><i class="ti ti-circle-check"></i></div>
         <div class="stat-num">{{ stats.onaylanan }}</div>
-        <div class="stat-label">Onaylanan</div>
+        <div class="stat-label">Onaylanan staj</div>
     </div>
     <div class="stat-card danger">
-        <div class="stat-icon"><i class="ti ti-circle-x"></i></div>
         <div class="stat-num">{{ stats.reddedilen }}</div>
         <div class="stat-label">Reddedilen</div>
     </div>
-    <div class="stat-card purple">
-        <div class="stat-icon"><i class="ti ti-users"></i></div>
-        <div class="stat-num">{{ stats.ogrenci }}</div>
-        <div class="stat-label">Toplam Öğrenci</div>
-    </div>
 </div>
 
-<div class="card">
+<nav class="advisor-tabs">
+    <a href="#onay-basvuru" class="advisor-tab active">
+        <i class="ti ti-briefcase"></i> Staj Başvuruları
+        {% if stats.bekleyen_basvuru %}<span class="tab-badge">{{ stats.bekleyen_basvuru }}</span>{% endif %}
+    </a>
+    <a href="#onay-gunluk" class="advisor-tab">
+        <i class="ti ti-notebook"></i> Günlük Kayıtları
+        {% if stats.bekleyen_gunluk %}<span class="tab-badge">{{ stats.bekleyen_gunluk }}</span>{% endif %}
+    </a>
+</nav>
+
+<section class="card approval-section" id="onay-basvuru">
     <div class="card-header">
-        <h2><i class="ti ti-clock"></i> Bekleyen Staj Başvuruları</h2>
+        <h2><i class="ti ti-clock"></i> Onaylanacak Staj Başvuruları</h2>
+        <span class="section-hint">Öğrenci şirket ilanına başvurdu — onayla veya reddet</span>
     </div>
+
     {% if applies %}
-    <div class="table-wrap">
-        <table>
-            <thead>
-                <tr>
-                    <th>Öğrenci</th>
-                    <th>Şirket</th>
-                    <th>Tür</th>
-                    <th>Başlangıç</th>
-                    <th>İşlem</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for a in applies %}
-                <tr>
-                    <td>
+    <div class="approval-list">
+        {% for a in applies %}
+        <article class="approval-item">
+            <div class="approval-main">
+                <div class="approval-student">
+                    <span class="avatar">{{ (a.student.name[0] if a.student else '?')|upper }}</span>
+                    <div>
                         <strong>{{ a.student.name if a.student else 'Öğrenci' }}</strong>
                         {% if a.student and a.student.student_no %}
-                        <br><small>{{ a.student.student_no }}</small>
+                        <span class="sub">{{ a.student.student_no }} · {{ a.student.department or '' }}</span>
                         {% endif %}
-                    </td>
-                    <td>
-                        {{ a.company_name }}
-                        {% if a.program %}<br><small>{{ a.program.title }}</small>{% endif %}
-                    </td>
-                    <td><span class="badge badge-type">{{ a.internship_type }}</span></td>
-                    <td>{{ a.start_date }}</td>
-                    <td class="action-cell">
-                        <form method="POST" action="{{ url_for('action_apply', apply_id=a.id, action='ok') }}" class="inline-form">
-                            <button type="submit" class="btn-ok btn-sm">Onayla</button>
-                        </form>
-                        <form method="POST" action="{{ url_for('action_apply', apply_id=a.id, action='no') }}" class="inline-form">
-                            <button type="submit" class="btn-no btn-sm">Reddet</button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    {% else %}
-    <p class="empty"><i class="ti ti-checks"></i> Bekleyen başvuru yok.</p>
-    {% endif %}
-</div>
-
-<div class="dashboard-grid">
-    <section class="card">
-        <div class="card-header"><h2><i class="ti ti-notebook"></i> Bekleyen Günlükler</h2></div>
-        {% if logs %}
-            {% for l in logs %}
-            <div class="action-card">
-                <p><strong>{{ l.student_name }}</strong> · {{ l.date.strftime('%d.%m.%Y %H:%M') }}</p>
-                <p class="log-preview">{{ l.content }}</p>
-                <div class="action-btns">
-                    <form method="POST" action="{{ url_for('action_log', log_id=l.id, action='ok') }}" class="inline-form">
-                        <button type="submit" class="btn-ok btn-sm">Onayla</button>
-                    </form>
-                    <form method="POST" action="{{ url_for('action_log', log_id=l.id, action='no') }}" class="inline-form">
-                        <button type="submit" class="btn-no btn-sm">Reddet</button>
-                    </form>
+                    </div>
+                </div>
+                <div class="approval-detail">
+                    <p class="detail-title">{{ a.company_name }}</p>
+                    {% if a.program %}
+                    <p class="detail-sub">{{ a.program.title }}</p>
+                    {% endif %}
+                    <p class="detail-meta">
+                        <span class="badge badge-type">{{ a.internship_type }}</span>
+                        <span>{{ a.start_date }}{% if a.end_date %} – {{ a.end_date }}{% endif %}</span>
+                    </p>
+                    {% if a.description %}
+                    <p class="log-preview">{{ a.description }}</p>
+                    {% endif %}
                 </div>
             </div>
-            {% endfor %}
-        {% else %}
-            <p class="empty">Bekleyen günlük yok.</p>
-        {% endif %}
-    </section>
+            <div class="approval-actions">
+                <form method="POST" action="{{ url_for('action_apply', apply_id=a.id, action='ok') }}">
+                    <button type="submit" class="btn-approve">
+                        <i class="ti ti-check"></i> Onayla
+                    </button>
+                </form>
+                <form method="POST" action="{{ url_for('action_apply', apply_id=a.id, action='no') }}"
+                      onsubmit="return confirm('Başvuru reddedilsin mi?');">
+                    <button type="submit" class="btn-reject">
+                        <i class="ti ti-x"></i> Reddet
+                    </button>
+                </form>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <i class="ti ti-circle-check"></i>
+        <p>Bekleyen staj başvurusu yok.</p>
+    </div>
+    {% endif %}
+</section>
 
-    <section class="card">
-        <div class="card-header"><h2><i class="ti ti-school"></i> Öğrenciler</h2></div>
-        {% if students %}
-        <ul class="student-list">
-            {% for s in students %}
-            <li>
-                <strong>{{ s.name }}</strong>
-                <span>{{ s.email }}</span>
-                {% if s.department %}<small>{{ s.department }}</small>{% endif %}
-            </li>
-            {% endfor %}
-        </ul>
-        {% else %}
-        <p class="empty">Kayıtlı öğrenci yok.</p>
-        {% endif %}
-    </section>
-</div>
+<section class="card approval-section" id="onay-gunluk">
+    <div class="card-header">
+        <h2><i class="ti ti-notebook"></i> Onaylanacak Günlük Kayıtları</h2>
+        <span class="section-hint">Stajı onaylanmış öğrencinin günlüğü</span>
+    </div>
 
-{% if approved_logs %}
+    {% if logs %}
+    <div class="approval-list">
+        {% for l in logs %}
+        <article class="approval-item">
+            <div class="approval-main">
+                <div class="approval-student">
+                    <span class="avatar">{{ l.student_name[0]|upper }}</span>
+                    <div>
+                        <strong>{{ l.student_name }}</strong>
+                        <span class="sub">{{ l.date.strftime('%d.%m.%Y %H:%M') }}</span>
+                    </div>
+                </div>
+                <div class="approval-detail">
+                    <p class="log-preview log-box">{{ l.content }}</p>
+                </div>
+            </div>
+            <div class="approval-actions">
+                <form method="POST" action="{{ url_for('action_log', log_id=l.id, action='ok') }}">
+                    <button type="submit" class="btn-approve">
+                        <i class="ti ti-check"></i> Onayla
+                    </button>
+                </form>
+                <form method="POST" action="{{ url_for('action_log', log_id=l.id, action='no') }}"
+                      onsubmit="return confirm('Günlük reddedilsin mi?');">
+                    <button type="submit" class="btn-reject">
+                        <i class="ti ti-x"></i> Reddet
+                    </button>
+                </form>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <i class="ti ti-circle-check"></i>
+        <p>Bekleyen günlük kaydı yok.</p>
+    </div>
+    {% endif %}
+</section>
+
+{% if recent_applies or approved_logs %}
 <section class="card full-width">
-    <div class="card-header"><h2>Son İşlenen Günlükler</h2></div>
+    <div class="card-header">
+        <h2><i class="ti ti-history"></i> Son İşlemler</h2>
+    </div>
     <div class="table-wrap">
         <table>
             <thead>
-                <tr><th>Öğrenci</th><th>Tarih</th><th>Durum</th></tr>
+                <tr><th>Tür</th><th>Öğrenci / İçerik</th><th>Durum</th></tr>
             </thead>
             <tbody>
+                {% for a in recent_applies %}
+                <tr>
+                    <td>Staj başvurusu</td>
+                    <td>{{ a.student.name if a.student else '—' }} — {{ a.company_name }}</td>
+                    <td><span class="badge badge-{{ a.status|lower|replace(' ','-')|replace('ı','i') }}">{{ a.status }}</span></td>
+                </tr>
+                {% endfor %}
                 {% for l in approved_logs %}
                 <tr>
-                    <td>{{ l.student_name }}</td>
-                    <td>{{ l.date.strftime('%d.%m.%Y %H:%M') }}</td>
+                    <td>Günlük</td>
+                    <td>{{ l.student_name }} — {{ l.content[:60] }}{% if l.content|length > 60 %}…{% endif %}</td>
                     <td><span class="badge badge-{{ l.status|lower|replace('ı','i') }}">{{ l.status }}</span></td>
                 </tr>
                 {% endfor %}

@@ -127,11 +127,16 @@ def dashboard():
             .order_by(Internship.id.desc())
             .all()
         )
-        students = User.query.filter(User.role.in_(['ogrenci', 'student'])).order_by(User.name).all()
         approved_logs = (
             DailyLog.query.filter(DailyLog.status != 'Beklemede')
             .order_by(DailyLog.date.desc())
             .limit(10)
+            .all()
+        )
+        recent_applies = (
+            Internship.query.filter(Internship.status != 'Onay Bekliyor')
+            .order_by(Internship.id.desc())
+            .limit(8)
             .all()
         )
         return render_template(
@@ -139,12 +144,13 @@ def dashboard():
             logs=logs,
             applies=applies,
             approved_logs=approved_logs,
-            students=students,
+            recent_applies=recent_applies,
             stats={
-                'bekleyen': len(applies),
+                'bekleyen_basvuru': len(applies),
+                'bekleyen_gunluk': len(logs),
+                'toplam_bekleyen': len(applies) + len(logs),
                 'onaylanan': Internship.query.filter_by(status='Onaylandı').count(),
                 'reddedilen': Internship.query.filter_by(status='Reddedildi').count(),
-                'ogrenci': len(students),
             },
         )
 
