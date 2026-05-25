@@ -1,28 +1,16 @@
 # StajFlow
 
-Staj takip sistemi — öğrenci, **tek danışman** paneli ve admin yönetimi.
+Üniversite staj takip sistemi — hocaya sunum için demo hesaplarla çalışır.
 
-## Roller
+## Akış
 
-- **Öğrenci** — staj başvurusu, günlük kaydı
-- **Danışman** — başvuru ve günlük onayı, istatistik paneli
-- **Admin** — kullanıcı yönetimi
+1. **Admin** — şirket ekler, staj programı açar (şirket adına)
+2. **Öğrenci** — açık programlardan birini seçer, başvurur
+3. **Danışman** — başvuruyu onaylar/reddeder
+4. **Öğrenci** — onay sonrası günlük kaydı girer
+5. **Danışman** — günlükleri onaylar
 
-## Kurulum
-
-```bash
-python -m venv venv
-venv\Scripts\activate
-pip install -r requirements.txt
-python setup_db.py
-python app.py
-```
-
-http://127.0.0.1:5000
-
-> İlk çalıştırmada `instance/stajflow.db` otomatik oluşur ve demo hesaplar eklenir.
-
-## Demo giriş (danışman dahil)
+## Demo hesaplar (3 tane yeter)
 
 | Rol | E-posta | Şifre |
 |-----|---------|-------|
@@ -30,13 +18,18 @@ http://127.0.0.1:5000
 | Danışman | hoca@staj.edu.tr | hoca123 |
 | Öğrenci | ogr@staj.edu.tr | ogr123 |
 
-## Git (ekip)
+## Kurulum
 
 ```bash
-git pull origin main
-git add .
-git commit -m "aciklama"
-git push origin main
+pip install -r requirements.txt
+python setup_db.py
+python app.py
 ```
 
-https://github.com/sl-kl3/StajFlow
+http://127.0.0.1:5000
+
+## Hocaya gösterim sırası
+
+1. Admin → 3 şirket + programlar (zaten demo veride var)
+2. Öğrenci → program seç → başvuru
+3. Danışman → başvuru onay → günlük onay

@@ -19,9 +19,37 @@ class User(UserMixin, db.Model):
     daily_logs = db.relationship('DailyLog', backref='student', lazy=True)
 
 
+class Company(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120), nullable=False)
+    sector = db.Column(db.String(80), nullable=True)
+    contact = db.Column(db.String(120), nullable=True)
+    address = db.Column(db.String(200), nullable=True)
+    is_active = db.Column(db.Boolean, default=True)
+
+    programs = db.relationship('InternshipProgram', backref='company', lazy=True)
+
+
+class InternshipProgram(db.Model):
+    """Şirketin açtığı staj ilanı — öğrenci buradan seçer."""
+    id = db.Column(db.Integer, primary_key=True)
+    company_id = db.Column(db.Integer, db.ForeignKey('company.id'), nullable=False)
+    title = db.Column(db.String(150), nullable=False)
+    description = db.Column(db.Text, nullable=True)
+    internship_type = db.Column(db.String(50), default='Zorunlu')
+    start_date = db.Column(db.String(50))
+    end_date = db.Column(db.String(50), nullable=True)
+    quota = db.Column(db.Integer, default=5)
+    is_active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    applications = db.relationship('Internship', backref='program', lazy=True)
+
+
 class Internship(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    program_id = db.Column(db.Integer, db.ForeignKey('internship_program.id'), nullable=True)
     company_name = db.Column(db.String(100), nullable=False)
     internship_type = db.Column(db.String(50), default='Zorunlu')
     start_date = db.Column(db.String(50))

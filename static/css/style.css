@@ -455,6 +455,39 @@ th { color: var(--text3); font-size: 12px; font-weight: 600; }
 
 .empty { color: var(--text3); padding: 20px; text-align: center; }
 
+.program-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.program-card {
+    padding: 18px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface2);
+}
+
+.program-card.disabled { opacity: 0.65; }
+
+.program-card h3 { font-size: 1rem; margin: 8px 0; }
+
+.program-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.program-meta { font-size: 13px; color: var(--text3); margin: 10px 0; }
+
+.btn-sm-block { width: 100%; margin-top: 10px; padding: 10px; }
+
+.success-hint { color: var(--success); font-weight: 500; }
+
+.full-width { width: 100%; }
+
 .hint { color: var(--text3); font-size: 13px; }
 
 .status-box p { margin: 8px 0; }

@@ -3,7 +3,7 @@ from functools import wraps
 
 from flask import Flask, render_template, redirect, url_for, request, flash, abort
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
-from models import db, User, DailyLog, Internship
+from models import db, User, Company, InternshipProgram, Internship, DailyLog
 from werkzeug.security import generate_password_hash, check_password_hash
 from db_seed import init_database, normalize_role, is_danisman
 
@@ -38,6 +38,22 @@ def role_required(*roles):
     return decorator
 
 
+def active_internship(student_id):
+    return (
+        Internship.query.filter_by(student_id=student_id)
+        .filter(Internship.status.in_(['Onay Bekliyor', 'Onaylandı']))
+        .order_by(Internship.id.desc())
+        .first()
+    )
+
+
+def program_slots_left(program):
+    taken = Internship.query.filter_by(program_id=program.id).filter(
+        Internship.status.in_(['Onay Bekliyor', 'Onaylandı'])
+    ).count()
+    return max(0, program.quota - taken)
+
+
 @login_manager.user_loader
 def load_user(user_id):
     return db.session.get(User, int(user_id))
@@ -61,14 +77,13 @@ def login():
         user = User.query.filter_by(email=email).first()
 
         if user and check_password_hash(user.password, password):
-            if user.role != normalize_role(user.role):
-                user.role = normalize_role(user.role)
-                db.session.commit()
+            user.role = normalize_role(user.role)
+            db.session.commit()
             login_user(user)
             flash(f'Hoş geldin, {user.name}!', 'success')
             return redirect(url_for('dashboard'))
 
-        flash('E-posta veya şifre hatalı. Danışman: hoca@staj.edu.tr / hoca123', 'error')
+        flash('E-posta veya şifre hatalı.', 'error')
 
     return render_template('login.html')
 
@@ -88,34 +103,31 @@ def dashboard():
 
     if role == 'admin':
         users = User.query.order_by(User.role, User.name).all()
+        companies = Company.query.order_by(Company.name).all()
+        programs = (
+            InternshipProgram.query.order_by(InternshipProgram.is_active.desc(), InternshipProgram.id.desc()).all()
+        )
         stats = {
             'total': len(users),
             'ogrenci': sum(1 for u in users if normalize_role(u.role) == 'ogrenci'),
             'danisman': sum(1 for u in users if is_danisman(u.role)),
             'bekleyen_basvuru': Internship.query.filter_by(status='Onay Bekliyor').count(),
             'bekleyen_gunluk': DailyLog.query.filter_by(status='Beklemede').count(),
+            'program_sayisi': InternshipProgram.query.filter_by(is_active=True).count(),
+            'sirket_sayisi': Company.query.filter_by(is_active=True).count(),
         }
-        return render_template('admin.html', users=users, stats=stats)
+        return render_template(
+            'admin.html', users=users, stats=stats, companies=companies, programs=programs
+        )
 
     if role == 'danisman':
-        bekleyen = Internship.query.filter_by(status='Onay Bekliyor').count()
-        onaylanan = Internship.query.filter_by(status='Onaylandı').count()
-        reddedilen = Internship.query.filter_by(status='Reddedildi').count()
-        ogrenci_sayisi = User.query.filter(User.role.in_(['ogrenci', 'student'])).count()
-
         logs = DailyLog.query.filter_by(status='Beklemede').order_by(DailyLog.date.desc()).all()
         applies = (
             Internship.query.filter_by(status='Onay Bekliyor')
             .order_by(Internship.id.desc())
             .all()
         )
-        students = User.query.filter(
-            db.or_(
-                User.role == 'ogrenci',
-                User.role == 'student',
-            )
-        ).order_by(User.name).all()
-        all_applies = Internship.query.order_by(Internship.id.desc()).limit(20).all()
+        students = User.query.filter(User.role.in_(['ogrenci', 'student'])).order_by(User.name).all()
         approved_logs = (
             DailyLog.query.filter(DailyLog.status != 'Beklemede')
             .order_by(DailyLog.date.desc())
@@ -128,63 +140,57 @@ def dashboard():
             applies=applies,
             approved_logs=approved_logs,
             students=students,
-            all_applies=all_applies,
             stats={
-                'bekleyen': bekleyen,
-                'onaylanan': onaylanan,
-                'reddedilen': reddedilen,
-                'ogrenci': ogrenci_sayisi,
+                'bekleyen': len(applies),
+                'onaylanan': Internship.query.filter_by(status='Onaylandı').count(),
+                'reddedilen': Internship.query.filter_by(status='Reddedildi').count(),
+                'ogrenci': len(students),
             },
         )
 
-    logs = DailyLog.query.filter_by(student_id=current_user.id).order_by(
-        DailyLog.date.desc()
-    ).all()
-    apply = (
-        Internship.query.filter_by(student_id=current_user.id)
-        .order_by(Internship.id.desc())
-        .first()
+    logs = DailyLog.query.filter_by(student_id=current_user.id).order_by(DailyLog.date.desc()).all()
+    apply = active_internship(current_user.id)
+    programs = (
+        InternshipProgram.query.filter_by(is_active=True)
+        .join(Company)
+        .filter(Company.is_active == True)
+        .order_by(InternshipProgram.id.desc())
+        .all()
     )
-    return render_template('student.html', logs=logs, apply=apply)
+    for p in programs:
+        p.slots_left = program_slots_left(p)
+    return render_template('student.html', logs=logs, apply=apply, programs=programs)
 
 
-@app.route('/apply', methods=['POST'])
+@app.route('/apply_program/<int:program_id>', methods=['POST'])
 @login_required
 @role_required('ogrenci')
-def apply():
-    existing = (
-        Internship.query.filter_by(student_id=current_user.id)
-        .filter(Internship.status.in_(['Onay Bekliyor', 'Onaylandı']))
-        .order_by(Internship.id.desc())
-        .first()
-    )
-    if existing:
+def apply_program(program_id):
+    if active_internship(current_user.id):
         flash('Zaten aktif veya bekleyen bir staj başvurunuz var.', 'error')
         return redirect(url_for('dashboard'))
 
-    company = request.form.get('company', '').strip()
-    internship_type = request.form.get('type', 'Zorunlu')
-    start_date = request.form.get('start', '')
-    end_date = request.form.get('end', '')
-    description = request.form.get('description', '').strip()
-
-    if not company or not start_date:
-        flash('Şirket adı ve başlangıç tarihi zorunludur.', 'error')
+    program = InternshipProgram.query.filter_by(id=program_id, is_active=True).first_or_404()
+    if not program.company.is_active:
+        flash('Bu şirketin ilanı artık aktif değil.', 'error')
         return redirect(url_for('dashboard'))
 
-    db.session.add(
-        Internship(
-            student_id=current_user.id,
-            company_name=company,
-            internship_type=internship_type,
-            start_date=start_date,
-            end_date=end_date or None,
-            description=description or None,
-            status='Onay Bekliyor',
-        )
-    )
+    if program_slots_left(program) <= 0:
+        flash('Bu staj programı için kontenjan dolmuş.', 'error')
+        return redirect(url_for('dashboard'))
+
+    db.session.add(Internship(
+        student_id=current_user.id,
+        program_id=program.id,
+        company_name=program.company.name,
+        internship_type=program.internship_type,
+        start_date=program.start_date,
+        end_date=program.end_date,
+        description=program.description,
+        status='Onay Bekliyor',
+    ))
     db.session.commit()
-    flash('Staj başvurunuz danışmana iletildi.', 'success')
+    flash(f'"{program.title}" programına başvurunuz danışmana gönderildi.', 'success')
     return redirect(url_for('dashboard'))
 
 
@@ -197,34 +203,29 @@ def add_log():
         flash('Günlük içeriği boş olamaz.', 'error')
         return redirect(url_for('dashboard'))
 
-    internship = Internship.query.filter_by(
-        student_id=current_user.id, status='Onaylandı'
-    ).first()
-    if not internship:
+    if not Internship.query.filter_by(student_id=current_user.id, status='Onaylandı').first():
         flash('Günlük eklemek için onaylanmış bir stajınız olmalı.', 'error')
         return redirect(url_for('dashboard'))
 
-    db.session.add(
-        DailyLog(
-            student_id=current_user.id,
-            student_name=current_user.name,
-            content=content,
-            status='Beklemede',
-        )
-    )
+    db.session.add(DailyLog(
+        student_id=current_user.id,
+        student_name=current_user.name,
+        content=content,
+        status='Beklemede',
+    ))
     db.session.commit()
     flash('Günlük kaydınız danışmana gönderildi.', 'success')
     return redirect(url_for('dashboard'))
 
 
-@app.route('/action/apply/<int:apply_id>/<action>', methods=['GET', 'POST'])
+@app.route('/action/apply/<int:apply_id>/<action>', methods=['POST'])
 @login_required
 @role_required('danisman')
 def action_apply(apply_id, action):
     record = Internship.query.get_or_404(apply_id)
     if action == 'ok':
         record.status = 'Onaylandı'
-        flash('Staj başvurusu onaylandı.', 'success')
+        flash('Staj başvurusu onaylandı. Öğrenci günlük girebilir.', 'success')
     elif action == 'no':
         record.status = 'Reddedildi'
         flash('Staj başvurusu reddedildi.', 'success')
@@ -234,7 +235,7 @@ def action_apply(apply_id, action):
     return redirect(url_for('dashboard'))
 
 
-@app.route('/action/log/<int:log_id>/<action>', methods=['GET', 'POST'])
+@app.route('/action/log/<int:log_id>/<action>', methods=['POST'])
 @login_required
 @role_required('danisman')
 def action_log(log_id, action):
@@ -259,33 +260,23 @@ def admin_add_user():
     email = request.form.get('email', '').strip().lower()
     password = request.form.get('password', '')
     role = normalize_role(request.form.get('role', 'ogrenci'))
-    student_no = request.form.get('student_no', '').strip() or None
-    department = request.form.get('department', '').strip() or None
 
     if not all([name, email, password]):
         flash('Tüm alanları doldurun.', 'error')
-        return redirect(url_for('dashboard'))
-
-    if role not in ('admin', 'danisman', 'ogrenci'):
-        flash('Geçersiz rol.', 'error')
         return redirect(url_for('dashboard'))
 
     if User.query.filter_by(email=email).first():
         flash('Bu e-posta zaten kayıtlı.', 'error')
         return redirect(url_for('dashboard'))
 
-    db.session.add(
-        User(
-            email=email,
-            password=generate_password_hash(password),
-            name=name,
-            role=role,
-            student_no=student_no,
-            department=department,
-        )
-    )
+    db.session.add(User(
+        email=email,
+        password=generate_password_hash(password),
+        name=name,
+        role=role,
+    ))
     db.session.commit()
-    flash(f'{name} sisteme eklendi.', 'success')
+    flash(f'{name} eklendi.', 'success')
     return redirect(url_for('dashboard'))
 
 
@@ -297,12 +288,67 @@ def admin_delete_user(user_id):
     if user.id == current_user.id:
         flash('Kendi hesabınızı silemezsiniz.', 'error')
         return redirect(url_for('dashboard'))
-
     DailyLog.query.filter_by(student_id=user.id).delete()
     Internship.query.filter_by(student_id=user.id).delete()
     db.session.delete(user)
     db.session.commit()
     flash('Kullanıcı silindi.', 'success')
+    return redirect(url_for('dashboard'))
+
+
+@app.route('/admin/add_company', methods=['POST'])
+@login_required
+@role_required('admin')
+def admin_add_company():
+    name = request.form.get('name', '').strip()
+    if not name:
+        flash('Şirket adı zorunlu.', 'error')
+        return redirect(url_for('dashboard'))
+    db.session.add(Company(
+        name=name,
+        sector=request.form.get('sector', '').strip() or None,
+        contact=request.form.get('contact', '').strip() or None,
+        address=request.form.get('address', '').strip() or None,
+    ))
+    db.session.commit()
+    flash(f'Şirket "{name}" eklendi. Şimdi staj programı açabilirsiniz.', 'success')
+    return redirect(url_for('dashboard'))
+
+
+@app.route('/admin/add_program', methods=['POST'])
+@login_required
+@role_required('admin')
+def admin_add_program():
+    company_id = request.form.get('company_id', type=int)
+    title = request.form.get('title', '').strip()
+    if not company_id or not title:
+        flash('Şirket ve program başlığı zorunlu.', 'error')
+        return redirect(url_for('dashboard'))
+
+    db.session.add(InternshipProgram(
+        company_id=company_id,
+        title=title,
+        description=request.form.get('description', '').strip() or None,
+        internship_type=request.form.get('type', 'Zorunlu'),
+        start_date=request.form.get('start', ''),
+        end_date=request.form.get('end', '') or None,
+        quota=request.form.get('quota', 5, type=int) or 5,
+        is_active=True,
+    ))
+    db.session.commit()
+    flash(f'Staj programı "{title}" yayınlandı. Öğrenciler seçebilir.', 'success')
+    return redirect(url_for('dashboard'))
+
+
+@app.route('/admin/toggle_program/<int:program_id>', methods=['POST'])
+@login_required
+@role_required('admin')
+def admin_toggle_program(program_id):
+    program = InternshipProgram.query.get_or_404(program_id)
+    program.is_active = not program.is_active
+    db.session.commit()
+    durum = 'açıldı' if program.is_active else 'kapatıldı'
+    flash(f'Program {durum}.', 'success')
     return redirect(url_for('dashboard'))
 
 

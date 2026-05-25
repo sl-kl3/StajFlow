@@ -55,7 +55,10 @@
                         <br><small>{{ a.student.student_no }}</small>
                         {% endif %}
                     </td>
-                    <td>{{ a.company_name }}</td>
+                    <td>
+                        {{ a.company_name }}
+                        {% if a.program %}<br><small>{{ a.program.title }}</small>{% endif %}
+                    </td>
                     <td><span class="badge badge-type">{{ a.internship_type }}</span></td>
                     <td>{{ a.start_date }}</td>
                     <td class="action-cell">
