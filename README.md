@@ -10,6 +10,16 @@ Bilgisayar Mühendisliği staj takip projesi.
 | **Öğrenci** | Şirket ilanlarına başvuru, staj günlüğü |
 | **Danışman** | Başvuru ve günlük onayı |
 
+## Panel menüleri
+
+Her rol için sol menü ilgili bölüme kaydırır:
+
+| Rol | Menü |
+|-----|------|
+| **Öğrenci** | Ana Sayfa, Staj İlanları, Başvurularım, Staj Günlüğüm, Değerlendirmem |
+| **Danışman** | Ana Sayfa, Başvuru Onayı, Günlük Onayı, Son İşlemler |
+| **Yönetici** | Ana Sayfa, Öğrenciler, Başvurular, Şirketler, Raporlar |
+
 ## Kurulum
 
 ```bash

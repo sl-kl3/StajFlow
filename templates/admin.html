@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
-<header class="topbar">
+<header class="topbar nav-section" id="panel-ozet">
     <div>
         <h1 class="topbar-title">Sistem <span>Yöneticisi</span></h1>
-        <p class="topbar-date">Şirket kaydı ve staj ilanı yayınlama</p>
+        <p class="topbar-date">Staj süreçlerini yönet</p>
     </div>
 </header>
 
@@ -16,7 +16,7 @@
     </ul>
 </section>
 
-<div class="stats-grid">
+<div class="stats-grid nav-section" id="raporlar">
     <div class="stat-card purple">
         <div class="stat-num">{{ stats.sirket_sayisi }}</div>
         <div class="stat-label">Kayıtlı şirket</div>
@@ -33,9 +33,51 @@
         <div class="stat-num">{{ stats.ogrenci }}</div>
         <div class="stat-label">Öğrenci</div>
     </div>
+    <div class="stat-card">
+        <div class="stat-num">{{ stats.danisman }}</div>
+        <div class="stat-label">Danışman</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-num">{{ stats.bekleyen_gunluk }}</div>
+        <div class="stat-label">Bekleyen günlük</div>
+    </div>
 </div>
 
-<div class="dashboard-grid">
+<section class="card full-width nav-section" id="basvurular">
+    <h2><i class="ti ti-file-check"></i> Başvurular</h2>
+    {% if internships %}
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Öğrenci</th>
+                    <th>Şirket</th>
+                    <th>İlan</th>
+                    <th>Tür</th>
+                    <th>Tarih</th>
+                    <th>Durum</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in internships %}
+                <tr>
+                    <td>{{ i.student.name if i.student else '—' }}</td>
+                    <td>{{ i.company_name }}</td>
+                    <td>{{ i.program.title if i.program else '—' }}</td>
+                    <td>{{ i.internship_type }}</td>
+                    <td>{{ i.start_date }}{% if i.end_date %} – {{ i.end_date }}{% endif %}</td>
+                    <td><span class="badge badge-{{ i.status|lower|replace(' ', '-')|replace('ı','i') }}">{{ i.status }}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="empty">Henüz başvuru yok.</p>
+    {% endif %}
+</section>
+
+<div class="dashboard-grid nav-section" id="sirketler">
     <section class="card">
         <h2><i class="ti ti-building"></i> Şirket Kaydı</h2>
         <p class="hint">Staj yapılacak firmayı sisteme ekle (ad, sektör, iletişim).</p>
@@ -118,8 +160,8 @@
     {% endif %}
 </section>
 
-<section class="card full-width">
-    <h2>Kullanıcılar</h2>
+<section class="card full-width nav-section" id="ogrenciler">
+    <h2><i class="ti ti-users"></i> Kullanıcılar</h2>
     <div class="table-wrap">
         <table>
             <thead><tr><th>Ad</th><th>E-posta</th><th>Rol</th><th></th></tr></thead>
@@ -129,8 +171,8 @@
                     <td>{{ user.name }}</td>
                     <td>{{ user.email }}</td>
                     <td>
-                        {% if user.role == 'admin' %}Yönetici
-                        {% elif user.role == 'danisman' %}Danışman
+                        {% if normalize_role(user.role) == 'admin' %}Yönetici
+                        {% elif normalize_role(user.role) == 'danisman' %}Danışman
                         {% else %}Öğrenci{% endif %}
                     </td>
                     <td>

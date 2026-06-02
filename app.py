@@ -22,6 +22,15 @@ login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
 
+@app.context_processor
+def inject_role_helpers():
+    role = normalize_role(current_user.role) if current_user.is_authenticated else None
+    return {
+        'normalize_role': normalize_role,
+        'user_role': role,
+    }
+
+
 def role_required(*roles):
     normalized = {normalize_role(r) for r in roles}
 
@@ -116,8 +125,16 @@ def dashboard():
             'program_sayisi': InternshipProgram.query.filter_by(is_active=True).count(),
             'sirket_sayisi': Company.query.filter_by(is_active=True).count(),
         }
+        internships = (
+            Internship.query.order_by(Internship.id.desc()).all()
+        )
         return render_template(
-            'admin.html', users=users, stats=stats, companies=companies, programs=programs
+            'admin.html',
+            users=users,
+            stats=stats,
+            companies=companies,
+            programs=programs,
+            internships=internships,
         )
 
     if role == 'danisman':

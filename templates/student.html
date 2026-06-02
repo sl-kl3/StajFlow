@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
-<header class="topbar">
+<header class="topbar nav-section" id="panel-ozet">
     <div>
         <h1 class="topbar-title">Öğrenci <span>Paneli</span></h1>
-        <p class="topbar-date">Şirket staj ilanları</p>
+        <p class="topbar-date">Staj başvuruları, günlük ve değerlendirme takibi</p>
     </div>
 </header>
 
-<section class="card full-width" id="ilanlar">
+<section class="card full-width nav-section" id="ilanlar">
     <h2><i class="ti ti-building"></i> Şirket Staj İlanları</h2>
     {% if can_apply %}
     <p class="hint">Başvurmak istediğin ilanın altındaki butona bas.</p>
@@ -46,9 +46,9 @@
     {% endif %}
 </section>
 
-{% if apply %}
-<section class="card">
-    <h2><i class="ti ti-file-text"></i> Başvurum</h2>
+<section class="card nav-section" id="basvurularim">
+    <h2><i class="ti ti-file-text"></i> Başvurularım</h2>
+    {% if apply %}
     <div class="status-box">
         <p><span class="label">Şirket</span> <strong>{{ apply.company_name }}</strong></p>
         {% if apply.program %}
@@ -67,25 +67,23 @@
     {% elif apply.status == 'Reddedildi' %}
     <p class="hint">Reddedildi — yukarıdan başka ilana başvurabilirsin.</p>
     {% endif %}
+    {% else %}
+    <p class="empty">Henüz başvurun yok. Staj ilanları bölümünden başvurabilirsin.</p>
+    {% endif %}
 </section>
-{% endif %}
 
-<div class="dashboard-grid">
-    <section class="card">
-        <h2><i class="ti ti-notebook"></i> Günlük</h2>
-        {% if apply and apply.status == 'Onaylandı' %}
-        <form action="{{ url_for('add_log') }}" method="POST" class="stack-form">
-            <textarea name="content" rows="5" placeholder="Bugün ne yaptın?" required></textarea>
-            <button type="submit" class="btn-main">Gönder</button>
-        </form>
-        {% else %}
-        <p class="hint">Günlük için staj başvurunun onaylanması lazım.</p>
-        {% endif %}
-    </section>
-</div>
+<section class="card nav-section" id="staj-gunlugum">
+    <h2><i class="ti ti-notebook"></i> Staj Günlüğüm</h2>
+    {% if apply and apply.status == 'Onaylandı' %}
+    <form action="{{ url_for('add_log') }}" method="POST" class="stack-form">
+        <textarea name="content" rows="5" placeholder="Bugün ne yaptın?" required></textarea>
+        <button type="submit" class="btn-main">Gönder</button>
+    </form>
+    {% else %}
+    <p class="hint">Günlük yazmak için staj başvurunun onaylanması lazım.</p>
+    {% endif %}
 
-<section class="card full-width">
-    <h2>Günlüklerim</h2>
+    <h3 class="section-subtitle">Günlük Kayıtlarım</h3>
     {% if logs %}
     <div class="table-wrap">
         <table>
@@ -105,6 +103,38 @@
     </div>
     {% else %}
     <p class="empty">Henüz günlük yok.</p>
+    {% endif %}
+</section>
+
+<section class="card full-width nav-section" id="degerlendirme">
+    <h2><i class="ti ti-star"></i> Değerlendirmem</h2>
+    <p class="hint">Danışmanın başvuru ve günlük kayıtlarına verdiği onay durumları.</p>
+    {% if apply or logs %}
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr><th>Tür</th><th>Detay</th><th>Durum</th></tr>
+            </thead>
+            <tbody>
+                {% if apply %}
+                <tr>
+                    <td>Staj başvurusu</td>
+                    <td>{{ apply.company_name }}{% if apply.program %} — {{ apply.program.title }}{% endif %}</td>
+                    <td><span class="badge badge-{{ apply.status|lower|replace(' ', '-')|replace('ı','i') }}">{{ apply.status }}</span></td>
+                </tr>
+                {% endif %}
+                {% for log in logs %}
+                <tr>
+                    <td>Günlük</td>
+                    <td>{{ log.date.strftime('%d.%m.%Y') }} — {{ log.content[:80] }}{% if log.content|length > 80 %}…{% endif %}</td>
+                    <td><span class="badge badge-{{ log.status|lower|replace('ı','i') }}">{{ log.status }}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="empty">Henüz değerlendirilecek kayıt yok.</p>
     {% endif %}
 </section>
 {% endblock %}

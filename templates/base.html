@@ -15,23 +15,56 @@
                 <div class="sidebar-logo-icon"><i class="ti ti-briefcase"></i></div>
                 <div class="sidebar-logo-text">Staj<span>Flow</span></div>
             </div>
-            <nav class="sidebar-nav">
-                <a href="{{ url_for('dashboard') }}" class="nav-item active">
-                    <i class="ti ti-layout-dashboard"></i> Genel Bakış
+            <nav class="sidebar-nav" id="sidebar-nav">
+                {% if user_role == 'ogrenci' %}
+                <a href="{{ url_for('dashboard') }}#panel-ozet" class="nav-item" data-nav="panel-ozet">
+                    <i class="ti ti-home"></i> Ana Sayfa
                 </a>
-                {% if current_user.role == 'ogrenci' or current_user.role == 'student' %}
-                <a href="{{ url_for('dashboard') }}#ilanlar" class="nav-item">
+                <a href="{{ url_for('dashboard') }}#ilanlar" class="nav-item" data-nav="ilanlar">
                     <i class="ti ti-building"></i> Staj İlanları
                 </a>
-                {% elif current_user.role == 'danisman' or current_user.role == 'danishman' %}
-                <a href="{{ url_for('dashboard') }}#onay-basvuru" class="nav-item">
+                <a href="{{ url_for('dashboard') }}#basvurularim" class="nav-item" data-nav="basvurularim">
+                    <i class="ti ti-file-text"></i> Başvurularım
+                </a>
+                <a href="{{ url_for('dashboard') }}#staj-gunlugum" class="nav-item" data-nav="staj-gunlugum">
+                    <i class="ti ti-notebook"></i> Staj Günlüğüm
+                </a>
+                <a href="{{ url_for('dashboard') }}#degerlendirme" class="nav-item" data-nav="degerlendirme">
+                    <i class="ti ti-star"></i> Değerlendirmem
+                </a>
+                {% elif user_role == 'danisman' %}
+                <a href="{{ url_for('dashboard') }}#panel-ozet" class="nav-item" data-nav="panel-ozet">
+                    <i class="ti ti-home"></i> Ana Sayfa
+                </a>
+                <a href="{{ url_for('dashboard') }}#onay-basvuru" class="nav-item" data-nav="onay-basvuru">
                     <i class="ti ti-briefcase"></i> Başvuru Onayı
                 </a>
-                <a href="{{ url_for('dashboard') }}#onay-gunluk" class="nav-item">
+                <a href="{{ url_for('dashboard') }}#onay-gunluk" class="nav-item" data-nav="onay-gunluk">
                     <i class="ti ti-notebook"></i> Günlük Onayı
                 </a>
-                {% elif current_user.role == 'admin' %}
-                <span class="nav-item nav-hint"><i class="ti ti-building"></i> Şirket & ilan</span>
+                <a href="{{ url_for('dashboard') }}#son-islemler" class="nav-item" data-nav="son-islemler">
+                    <i class="ti ti-history"></i> Son İşlemler
+                </a>
+                {% elif user_role == 'admin' %}
+                <a href="{{ url_for('dashboard') }}#panel-ozet" class="nav-item" data-nav="panel-ozet">
+                    <i class="ti ti-home"></i> Ana Sayfa
+                </a>
+                <a href="{{ url_for('dashboard') }}#ogrenciler" class="nav-item" data-nav="ogrenciler">
+                    <i class="ti ti-users"></i> Öğrenciler
+                </a>
+                <a href="{{ url_for('dashboard') }}#basvurular" class="nav-item" data-nav="basvurular">
+                    <i class="ti ti-file-check"></i> Başvurular
+                </a>
+                <a href="{{ url_for('dashboard') }}#sirketler" class="nav-item" data-nav="sirketler">
+                    <i class="ti ti-building"></i> Şirketler
+                </a>
+                <a href="{{ url_for('dashboard') }}#raporlar" class="nav-item" data-nav="raporlar">
+                    <i class="ti ti-chart-bar"></i> Raporlar
+                </a>
+                {% else %}
+                <a href="{{ url_for('dashboard') }}#panel-ozet" class="nav-item" data-nav="panel-ozet">
+                    <i class="ti ti-layout-dashboard"></i> Genel Bakış
+                </a>
                 {% endif %}
                 <a href="{{ url_for('logout') }}" class="nav-item logout">
                     <i class="ti ti-logout"></i> Çıkış
@@ -39,9 +72,9 @@
             </nav>
             <div class="user-profile">
                 <p class="profile-name">{{ current_user.name }}</p>
-                <span class="role-badge role-{{ current_user.role }}">
-                    {% if current_user.role == 'admin' %}Yönetici
-                    {% elif current_user.role == 'danisman' %}Danışman
+                <span class="role-badge role-{{ user_role or current_user.role }}">
+                    {% if user_role == 'admin' %}Yönetici
+                    {% elif user_role == 'danisman' %}Danışman
                     {% else %}Öğrenci{% endif %}
                 </span>
             </div>
@@ -64,6 +97,69 @@
       document.getElementById('today-date')?.append(
         new Date().toLocaleDateString('tr-TR', { weekday:'long', day:'numeric', month:'long', year:'numeric' })
       );
+
+      (function () {
+        var nav = document.getElementById('sidebar-nav');
+        if (!nav) return;
+
+        var navItems = nav.querySelectorAll('.nav-item[data-nav]');
+        var defaultSection = navItems[0]?.dataset.nav || 'panel-ozet';
+
+        function currentSection() {
+          var hash = window.location.hash.replace('#', '');
+          return hash || defaultSection;
+        }
+
+        function setActiveNav() {
+          var active = currentSection();
+          navItems.forEach(function (item) {
+            item.classList.toggle('active', item.dataset.nav === active);
+          });
+          document.querySelectorAll('.advisor-tab').forEach(function (tab) {
+            var id = (tab.getAttribute('href') || '').replace('#', '');
+            tab.classList.toggle('active', id === active);
+          });
+        }
+
+        function scrollToSection(id) {
+          var el = document.getElementById(id);
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        navItems.forEach(function (item) {
+          item.addEventListener('click', function (e) {
+            var id = item.dataset.nav;
+            if (!id) return;
+            e.preventDefault();
+            history.pushState(null, '', '#' + id);
+            setActiveNav();
+            scrollToSection(id);
+          });
+        });
+
+        document.querySelectorAll('.advisor-tab[href^="#"]').forEach(function (tab) {
+          tab.addEventListener('click', function (e) {
+            var id = (tab.getAttribute('href') || '').replace('#', '');
+            if (!id) return;
+            e.preventDefault();
+            history.pushState(null, '', '#' + id);
+            setActiveNav();
+            scrollToSection(id);
+          });
+        });
+
+        window.addEventListener('hashchange', function () {
+          setActiveNav();
+          scrollToSection(currentSection());
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+          setActiveNav();
+          if (window.location.hash) {
+            scrollToSection(currentSection());
+          }
+        });
+      })();
     </script>
 </body>
 </html>
