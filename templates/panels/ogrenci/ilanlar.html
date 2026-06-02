@@ -1,0 +1,37 @@
+<section class="card full-width">
+    {% if can_apply %}
+    <p class="hint">Başvurmak istediğin ilanın altındaki butona bas.</p>
+    {% else %}
+    <p class="hint">İlanları inceleyebilirsin. Yeni başvuru için mevcut başvurunun sonuçlanması gerekir.</p>
+    {% endif %}
+
+    {% if programs %}
+    <div class="program-grid">
+        {% for p in programs %}
+        <article class="program-card {% if p.slots_left == 0 %}disabled{% endif %}">
+            <div class="program-head">
+                <strong>{{ p.company.name }}</strong>
+                <span class="badge badge-type">{{ p.internship_type }}</span>
+            </div>
+            <h3>{{ p.title }}</h3>
+            <p class="log-preview">{{ p.description or '—' }}</p>
+            <p class="program-meta">
+                <i class="ti ti-calendar"></i> {{ p.start_date }}{% if p.end_date %} – {{ p.end_date }}{% endif %}
+                · <i class="ti ti-users"></i> {{ p.slots_left }}/{{ p.quota }} kontenjan
+            </p>
+            {% if can_apply and p.slots_left > 0 %}
+            <form method="POST" action="{{ url_for('apply_program', program_id=p.id) }}">
+                <button type="submit" class="btn-main btn-sm-block">Başvur</button>
+            </form>
+            {% elif not can_apply %}
+            <p class="empty">Aktif başvurun var</p>
+            {% else %}
+            <p class="empty">Kontenjan dolu</p>
+            {% endif %}
+        </article>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="empty">Yayında ilan yok.</p>
+    {% endif %}
+</section>

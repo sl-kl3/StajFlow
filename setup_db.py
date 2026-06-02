@@ -9,4 +9,4 @@ with app.app_context():
     ensure_demo_users()
     ensure_sample_data()
     print('Veritabani hazir.')
-    print('Danisman: hoca@staj.edu.tr / hoca123')
+    print('Danisman: danisman@staj.edu.tr / danisman123')

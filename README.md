@@ -6,19 +6,19 @@ Bilgisayar Mühendisliği staj takip projesi.
 
 | Rol | Görev |
 |-----|--------|
-| **Sistem yöneticisi** | Şirket kaydı, staj ilanı yayınlama (şirketlerin ayrı hesabı yok) |
+| **Admin** | Şirket kaydı, staj ilanı yayınlama (şirketlerin ayrı hesabı yok) |
 | **Öğrenci** | Şirket ilanlarına başvuru, staj günlüğü |
 | **Danışman** | Başvuru ve günlük onayı |
 
 ## Panel menüleri
 
-Her rol için sol menü ilgili bölüme kaydırır:
+Her rol için sol menü ayrı sayfaya gider (kaydırma değil, gerçek sayfa geçişi):
 
 | Rol | Menü |
 |-----|------|
 | **Öğrenci** | Ana Sayfa, Staj İlanları, Başvurularım, Staj Günlüğüm, Değerlendirmem |
 | **Danışman** | Ana Sayfa, Başvuru Onayı, Günlük Onayı, Son İşlemler |
-| **Yönetici** | Ana Sayfa, Öğrenciler, Başvurular, Şirketler, Raporlar |
+| **Admin** | Ana Sayfa, Öğrenciler, Başvurular, Şirketler, Raporlar |
 
 ## Kurulum
 
@@ -34,6 +34,6 @@ http://127.0.0.1:5000
 
 | Rol | E-posta | Şifre |
 |-----|---------|-------|
-| Yönetici | admin@staj.edu.tr | admin123 |
-| Danışman | hoca@staj.edu.tr | hoca123 |
+| Admin | admin@staj.edu.tr | admin123 |
+| Danışman | danisman@staj.edu.tr | danisman123 |
 | Öğrenci | ogr@staj.edu.tr | ogr123 |

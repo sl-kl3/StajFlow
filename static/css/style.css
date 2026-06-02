@@ -320,6 +320,61 @@ textarea { min-height: 110px; resize: vertical; }
     min-width: 0;
 }
 
+.panel-page {
+    animation: panelFadeIn 0.35s ease both;
+}
+
+@keyframes panelFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.quick-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 16px;
+    margin-top: 8px;
+}
+
+.quick-link-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    text-decoration: none;
+    color: var(--text);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.quick-link-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 28px rgba(91, 33, 182, 0.1);
+    border-color: #c4b5fd;
+}
+
+.quick-link-card i {
+    font-size: 26px;
+    color: var(--p500);
+}
+
+.quick-link-card strong {
+    font-size: 15px;
+}
+
+.quick-link-card span {
+    font-size: 13px;
+    color: var(--text3);
+}
+
 .topbar { margin-bottom: 24px; }
 
 .topbar-title {

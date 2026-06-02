@@ -1,0 +1,32 @@
+<div class="stats-grid">
+    <div class="stat-card {% if apply %}success{% else %}warn{% endif %}">
+        <div class="stat-num">{% if apply %}1{% else %}0{% endif %}</div>
+        <div class="stat-label">Aktif başvuru</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-num">{{ logs|length }}</div>
+        <div class="stat-label">Günlük kaydı</div>
+    </div>
+    <div class="stat-card purple">
+        <div class="stat-num">{{ programs|length }}</div>
+        <div class="stat-label">Açık ilan</div>
+    </div>
+</div>
+
+<div class="quick-links">
+    <a href="{{ url_for('panel', section='ilanlar') }}" class="quick-link-card">
+        <i class="ti ti-building"></i>
+        <strong>Staj İlanları</strong>
+        <span>Şirket ilanlarına göz at</span>
+    </a>
+    <a href="{{ url_for('panel', section='basvurularim') }}" class="quick-link-card">
+        <i class="ti ti-file-text"></i>
+        <strong>Başvurularım</strong>
+        <span>{% if apply %}{{ apply.status }}{% else %}Henüz başvuru yok{% endif %}</span>
+    </a>
+    <a href="{{ url_for('panel', section='gunluk') }}" class="quick-link-card">
+        <i class="ti ti-notebook"></i>
+        <strong>Staj Günlüğüm</strong>
+        <span>Günlük yaz veya kayıtları gör</span>
+    </a>
+</div>

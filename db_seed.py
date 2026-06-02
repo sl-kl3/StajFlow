@@ -13,8 +13,8 @@ ROLE_ALIASES = {
 }
 
 DEMO_USERS = [
-    ('admin@staj.edu.tr', 'admin123', 'Sistem Yöneticisi', 'admin'),
-    ('hoca@staj.edu.tr', 'hoca123', 'Dr. Ahmet Yılmaz', 'danisman'),
+    ('admin@staj.edu.tr', 'admin123', 'Admin', 'admin'),
+    ('danisman@staj.edu.tr', 'danisman123', 'Dr. Ahmet Yılmaz', 'danisman'),
     ('ogr@staj.edu.tr', 'ogr123', 'Ayşe Demir', 'ogrenci'),
 ]
 
@@ -23,6 +23,7 @@ LEGACY_REMOVE_EMAILS = (
     'ayse@ogrenci.edu.tr',
     'mehmet@ogrenci.edu.tr',
     'ali@staj.edu.tr',
+    'hoca@staj.edu.tr',
 )
 
 

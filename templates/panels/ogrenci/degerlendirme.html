@@ -1,0 +1,30 @@
+<section class="card full-width">
+    <p class="hint">Danışmanın başvuru ve günlük kayıtlarına verdiği onay durumları.</p>
+    {% if apply or logs %}
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr><th>Tür</th><th>Detay</th><th>Durum</th></tr>
+            </thead>
+            <tbody>
+                {% if apply %}
+                <tr>
+                    <td>Staj başvurusu</td>
+                    <td>{{ apply.company_name }}{% if apply.program %} — {{ apply.program.title }}{% endif %}</td>
+                    <td><span class="badge badge-{{ apply.status|lower|replace(' ', '-')|replace('ı','i') }}">{{ apply.status }}</span></td>
+                </tr>
+                {% endif %}
+                {% for log in logs %}
+                <tr>
+                    <td>Günlük</td>
+                    <td>{{ log.date.strftime('%d.%m.%Y') }} — {{ log.content[:80] }}{% if log.content|length > 80 %}…{% endif %}</td>
+                    <td><span class="badge badge-{{ log.status|lower|replace('ı','i') }}">{{ log.status }}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="empty">Henüz değerlendirilecek kayıt yok.</p>
+    {% endif %}
+</section>

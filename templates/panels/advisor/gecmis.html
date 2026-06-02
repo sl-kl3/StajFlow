@@ -1,0 +1,29 @@
+<section class="card full-width">
+    {% if recent_applies or approved_logs %}
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr><th>Tür</th><th>Öğrenci / İçerik</th><th>Durum</th></tr>
+            </thead>
+            <tbody>
+                {% for a in recent_applies %}
+                <tr>
+                    <td>Staj başvurusu</td>
+                    <td>{{ a.student.name if a.student else '—' }} — {{ a.company_name }}</td>
+                    <td><span class="badge badge-{{ a.status|lower|replace(' ','-')|replace('ı','i') }}">{{ a.status }}</span></td>
+                </tr>
+                {% endfor %}
+                {% for l in approved_logs %}
+                <tr>
+                    <td>Günlük</td>
+                    <td>{{ l.student_name }} — {{ l.content[:60] }}{% if l.content|length > 60 %}…{% endif %}</td>
+                    <td><span class="badge badge-{{ l.status|lower|replace('ı','i') }}">{{ l.status }}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="empty">Henüz işlem geçmişi yok.</p>
+    {% endif %}
+</section>

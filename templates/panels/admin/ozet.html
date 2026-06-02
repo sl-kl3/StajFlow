@@ -1,0 +1,26 @@
+<section class="card info-card">
+    <h2><i class="ti ti-info-circle"></i> Kim ne yapıyor?</h2>
+    <ul class="info-list">
+        <li><strong>Admin (sen):</strong> Üniversite/bölüm tarafı. Anlaşmalı şirketleri kaydedersin, staj ilanlarını yayınlarsın.</li>
+        <li><strong>Öğrenci:</strong> Yayında olan şirket ilanlarına başvurur. Staj başlayınca günlük yazar.</li>
+        <li><strong>Danışman:</strong> Öğrencinin başvurusunu ve günlüklerini onaylar veya reddeder.</li>
+    </ul>
+</section>
+
+<div class="quick-links">
+    <a href="{{ url_for('panel', section='sirketler') }}" class="quick-link-card">
+        <i class="ti ti-building"></i>
+        <strong>Şirketler</strong>
+        <span>{{ stats.sirket_sayisi }} kayıtlı şirket</span>
+    </a>
+    <a href="{{ url_for('panel', section='basvurular') }}" class="quick-link-card">
+        <i class="ti ti-file-check"></i>
+        <strong>Başvurular</strong>
+        <span>{{ stats.bekleyen_basvuru }} bekleyen</span>
+    </a>
+    <a href="{{ url_for('panel', section='raporlar') }}" class="quick-link-card">
+        <i class="ti ti-chart-bar"></i>
+        <strong>Raporlar</strong>
+        <span>Sistem istatistikleri</span>
+    </a>
+</div>

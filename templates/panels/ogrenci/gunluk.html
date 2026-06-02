@@ -1,0 +1,32 @@
+<section class="card">
+    {% if apply and apply.status == 'Onaylandı' %}
+    <form action="{{ url_for('add_log') }}" method="POST" class="stack-form">
+        <textarea name="content" rows="5" placeholder="Bugün ne yaptın?" required></textarea>
+        <button type="submit" class="btn-main">Gönder</button>
+    </form>
+    {% else %}
+    <p class="hint">Günlük yazmak için staj başvurunun onaylanması lazım.</p>
+    {% endif %}
+
+    <h3 class="section-subtitle">Günlük Kayıtlarım</h3>
+    {% if logs %}
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr><th>Tarih</th><th>İçerik</th><th>Durum</th></tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                    <td>{{ log.date.strftime('%d.%m.%Y %H:%M') }}</td>
+                    <td>{{ log.content }}</td>
+                    <td><span class="badge badge-{{ log.status|lower|replace('ı','i') }}">{{ log.status }}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="empty">Henüz günlük yok.</p>
+    {% endif %}
+</section>
