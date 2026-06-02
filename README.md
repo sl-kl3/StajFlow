@@ -11,6 +11,7 @@ Bilgisayar Mühendisliği staj takip sistemi (Flask + SQLite).
 ## Kurulum
 
 ```bash
+git pull
 pip install -r requirements.txt
 python setup_db.py
 python app.py
@@ -26,13 +27,23 @@ Tarayıcı: http://127.0.0.1:5000
 | Danışman | danisman@staj.edu.tr | danisman123 |
 | Öğrenci | ogr@staj.edu.tr | ogr123 |
 
-## Dosya yapısı
+## Dosyalar (GitHub'da olanlar)
 
-```
-app.py          → ana uygulama, route'lar
-models.py       → veritabanı tabloları
-db_seed.py      → demo veriler
-setup_db.py     → veritabanını sıfırlama
-templates/      → html şablonları
-static/css/     → stil dosyası
-```
+| Dosya / Klasör | Ne işe yarar? |
+|----------------|---------------|
+| `app.py` | Ana program. Giriş, paneller, başvuru, onay route'ları burada. |
+| `models.py` | Veritabanı tabloları (User, Company, Internship, DailyLog vb.) |
+| `db_seed.py` | İlk açılışta demo kullanıcı ve örnek şirket/ilan ekler |
+| `setup_db.py` | Veritabanını sıfırlayıp demo verileri yeniden kurar |
+| `requirements.txt` | Kurulacak Python kütüphaneleri listesi |
+| `.gitignore` | GitHub'a gitmemesi gereken dosyaları belirler |
+| `templates/` | HTML sayfaları (login, panel, admin, öğrenci, danışman) |
+| `static/css/style.css` | Site görünümü (renkler, sidebar, kartlar) |
+
+## GitHub'a gitmeyenler (normal, silinebilir)
+
+| Klasör | Açıklama |
+|--------|----------|
+| `instance/` | SQLite veritabanı (`stajflow.db`). `app.py` veya `setup_db.py` çalışınca otomatik oluşur. |
+| `__pycache__/` | Python'un geçici önbelleği. Silinsin, tekrar oluşur. |
+| `venv/` | Sanal ortam (varsa). Herkes kendi bilgisayarında kurar. |
