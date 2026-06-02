@@ -3,14 +3,7 @@
     <div class="table-wrap">
         <table>
             <thead>
-                <tr>
-                    <th>Öğrenci</th>
-                    <th>Şirket</th>
-                    <th>İlan</th>
-                    <th>Tür</th>
-                    <th>Tarih</th>
-                    <th>Durum</th>
-                </tr>
+                <tr><th>Öğrenci</th><th>Şirket</th><th>İlan</th><th>Durum</th></tr>
             </thead>
             <tbody>
                 {% for i in internships %}
@@ -18,8 +11,6 @@
                     <td>{{ i.student.name if i.student else '—' }}</td>
                     <td>{{ i.company_name }}</td>
                     <td>{{ i.program.title if i.program else '—' }}</td>
-                    <td>{{ i.internship_type }}</td>
-                    <td>{{ i.start_date }}{% if i.end_date %} – {{ i.end_date }}{% endif %}</td>
                     <td><span class="badge badge-{{ i.status|lower|replace(' ', '-')|replace('ı','i') }}">{{ i.status }}</span></td>
                 </tr>
                 {% endfor %}
@@ -27,6 +18,6 @@
         </table>
     </div>
     {% else %}
-    <p class="empty">Henüz başvuru yok.</p>
+    <p class="empty">Başvuru yok.</p>
     {% endif %}
 </section>

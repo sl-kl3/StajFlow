@@ -17,24 +17,16 @@
             </div>
             <div class="approval-actions">
                 <form method="POST" action="{{ url_for('action_log', log_id=l.id, action='ok') }}">
-                    <button type="submit" class="btn-approve">
-                        <i class="ti ti-check"></i> Onayla
-                    </button>
+                    <button type="submit" class="btn-approve"><i class="ti ti-check"></i> Onayla</button>
                 </form>
-                <form method="POST" action="{{ url_for('action_log', log_id=l.id, action='no') }}"
-                      onsubmit="return confirm('Günlük reddedilsin mi?');">
-                    <button type="submit" class="btn-reject">
-                        <i class="ti ti-x"></i> Reddet
-                    </button>
+                <form method="POST" action="{{ url_for('action_log', log_id=l.id, action='no') }}" onsubmit="return confirm('Reddedilsin mi?');">
+                    <button type="submit" class="btn-reject"><i class="ti ti-x"></i> Reddet</button>
                 </form>
             </div>
         </article>
         {% endfor %}
     </div>
     {% else %}
-    <div class="empty-state">
-        <i class="ti ti-circle-check"></i>
-        <p>Bekleyen günlük kaydı yok.</p>
-    </div>
+    <div class="empty-state"><i class="ti ti-circle-check"></i><p>Bekleyen günlük yok.</p></div>
     {% endif %}
 </section>

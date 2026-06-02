@@ -1,24 +1,12 @@
 # StajFlow
 
-Bilgisayar Mühendisliği staj takip projesi.
+Bilgisayar Mühendisliği staj takip sistemi (Flask + SQLite).
 
-## Sistem
+## Roller
 
-| Rol | Görev |
-|-----|--------|
-| **Admin** | Şirket kaydı, staj ilanı yayınlama (şirketlerin ayrı hesabı yok) |
-| **Öğrenci** | Şirket ilanlarına başvuru, staj günlüğü |
-| **Danışman** | Başvuru ve günlük onayı |
-
-## Panel menüleri
-
-Her rol için sol menü ayrı sayfaya gider (kaydırma değil, gerçek sayfa geçişi):
-
-| Rol | Menü |
-|-----|------|
-| **Öğrenci** | Ana Sayfa, Staj İlanları, Başvurularım, Staj Günlüğüm, Değerlendirmem |
-| **Danışman** | Ana Sayfa, Başvuru Onayı, Günlük Onayı, Son İşlemler |
-| **Admin** | Ana Sayfa, Öğrenciler, Başvurular, Şirketler, Raporlar |
+- **Admin** — şirket ve ilan ekler
+- **Öğrenci** — ilanlara başvurur, günlük yazar
+- **Danışman** — başvuru ve günlük onaylar
 
 ## Kurulum
 
@@ -28,7 +16,7 @@ python setup_db.py
 python app.py
 ```
 
-http://127.0.0.1:5000
+Tarayıcı: http://127.0.0.1:5000
 
 ## Test hesapları
 
@@ -37,3 +25,14 @@ http://127.0.0.1:5000
 | Admin | admin@staj.edu.tr | admin123 |
 | Danışman | danisman@staj.edu.tr | danisman123 |
 | Öğrenci | ogr@staj.edu.tr | ogr123 |
+
+## Dosya yapısı
+
+```
+app.py          → ana uygulama, route'lar
+models.py       → veritabanı tabloları
+db_seed.py      → demo veriler
+setup_db.py     → veritabanını sıfırlama
+templates/      → html şablonları
+static/css/     → stil dosyası
+```

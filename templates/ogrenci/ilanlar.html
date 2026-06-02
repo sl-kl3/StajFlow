@@ -2,7 +2,7 @@
     {% if can_apply %}
     <p class="hint">Başvurmak istediğin ilanın altındaki butona bas.</p>
     {% else %}
-    <p class="hint">İlanları inceleyebilirsin. Yeni başvuru için mevcut başvurunun sonuçlanması gerekir.</p>
+    <p class="hint">Yeni başvuru için mevcut başvurunun sonuçlanması gerekir.</p>
     {% endif %}
 
     {% if programs %}
@@ -16,8 +16,8 @@
             <h3>{{ p.title }}</h3>
             <p class="log-preview">{{ p.description or '—' }}</p>
             <p class="program-meta">
-                <i class="ti ti-calendar"></i> {{ p.start_date }}{% if p.end_date %} – {{ p.end_date }}{% endif %}
-                · <i class="ti ti-users"></i> {{ p.slots_left }}/{{ p.quota }} kontenjan
+                {{ p.start_date }}{% if p.end_date %} – {{ p.end_date }}{% endif %}
+                · {{ p.slots_left }}/{{ p.quota }} kontenjan
             </p>
             {% if can_apply and p.slots_left > 0 %}
             <form method="POST" action="{{ url_for('apply_program', program_id=p.id) }}">

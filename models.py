@@ -31,7 +31,7 @@ class Company(db.Model):
 
 
 class InternshipProgram(db.Model):
-    """Şirketin açtığı staj ilanı — öğrenci buradan seçer."""
+    """Sirketin actigi staj ilani."""
     id = db.Column(db.Integer, primary_key=True)
     company_id = db.Column(db.Integer, db.ForeignKey('company.id'), nullable=False)
     title = db.Column(db.String(150), nullable=False)
@@ -41,7 +41,6 @@ class InternshipProgram(db.Model):
     end_date = db.Column(db.String(50), nullable=True)
     quota = db.Column(db.Integer, default=5)
     is_active = db.Column(db.Boolean, default=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     applications = db.relationship('Internship', backref='program', lazy=True)
 

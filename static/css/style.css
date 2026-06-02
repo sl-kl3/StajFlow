@@ -280,10 +280,6 @@ textarea { min-height: 110px; resize: vertical; }
 
 .nav-item.logout { color: #fca5a5; margin-top: 12px; }
 
-.nav-section {
-    scroll-margin-top: 24px;
-}
-
 .section-subtitle {
     margin: 20px 0 12px;
     font-size: 15px;
@@ -592,57 +588,8 @@ th { color: var(--text3); font-size: 12px; font-weight: 600; }
     border-color: #6ee7b7;
 }
 
-.advisor-tabs {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-}
-
-.advisor-tab {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 20px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    text-decoration: none;
-    color: var(--text2);
-    font-weight: 600;
-    font-size: 14px;
-    transition: all 0.2s;
-}
-
-.advisor-tab:hover,
-.advisor-tab.active {
-    background: var(--p500);
-    color: #fff;
-    border-color: var(--p500);
-}
-
-.tab-badge {
-    background: rgba(255,255,255,0.25);
-    color: inherit;
-    padding: 2px 8px;
-    border-radius: 20px;
-    font-size: 12px;
-}
-
-.advisor-tab:not(.active) .tab-badge {
-    background: #fef3c7;
-    color: #b45309;
-}
-
 .approval-section {
-    scroll-margin-top: 20px;
     margin-bottom: 24px;
-}
-
-.section-hint {
-    font-size: 13px;
-    color: var(--text3);
-    font-weight: 400;
 }
 
 .approval-list {

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="panel-page">
+    <header class="topbar{% if panel_role == 'danisman' and section == 'ozet' %} advisor-topbar{% endif %}">
+        <div>
+            <h1 class="topbar-title">{{ page_title }}</h1>
+            <p class="topbar-date"{% if panel_role == 'danisman' and section == 'ozet' %} id="today-date"{% endif %}>
+                {{ page_subtitle }}
+            </p>
+        </div>
+        {% if panel_role == 'danisman' and section == 'ozet' %}
+            {% if stats.toplam_bekleyen > 0 %}
+            <div class="pending-pill"><i class="ti ti-bell"></i> {{ stats.toplam_bekleyen }} bekliyor</div>
+            {% else %}
+            <div class="pending-pill done"><i class="ti ti-check"></i> Kuyruk boş</div>
+            {% endif %}
+        {% endif %}
+    </header>
+    {% include panel_role ~ '/' ~ section ~ '.html' %}
+</div>
+{% endblock %}

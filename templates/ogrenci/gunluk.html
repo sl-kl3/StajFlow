@@ -5,16 +5,14 @@
         <button type="submit" class="btn-main">Gönder</button>
     </form>
     {% else %}
-    <p class="hint">Günlük yazmak için staj başvurunun onaylanması lazım.</p>
+    <p class="hint">Günlük için staj başvurunun onaylanması lazım.</p>
     {% endif %}
 
-    <h3 class="section-subtitle">Günlük Kayıtlarım</h3>
+    <h3 class="section-subtitle">Kayıtlarım</h3>
     {% if logs %}
     <div class="table-wrap">
         <table>
-            <thead>
-                <tr><th>Tarih</th><th>İçerik</th><th>Durum</th></tr>
-            </thead>
+            <thead><tr><th>Tarih</th><th>İçerik</th><th>Durum</th></tr></thead>
             <tbody>
                 {% for log in logs %}
                 <tr>

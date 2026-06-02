@@ -1,0 +1,17 @@
+<section class="card info-card">
+    <h2><i class="ti ti-info-circle"></i> Sistem</h2>
+    <ul class="info-list">
+        <li><strong>Admin:</strong> Şirket ve ilan ekler.</li>
+        <li><strong>Öğrenci:</strong> İlanlara başvurur, günlük yazar.</li>
+        <li><strong>Danışman:</strong> Başvuru ve günlükleri onaylar.</li>
+    </ul>
+</section>
+
+<div class="stats-grid">
+    <div class="stat-card purple"><div class="stat-num">{{ stats.sirket_sayisi }}</div><div class="stat-label">Şirket</div></div>
+    <div class="stat-card warn"><div class="stat-num">{{ stats.program_sayisi }}</div><div class="stat-label">Açık ilan</div></div>
+    <div class="stat-card"><div class="stat-num">{{ stats.bekleyen_basvuru }}</div><div class="stat-label">Bekleyen başvuru</div></div>
+    <div class="stat-card"><div class="stat-num">{{ stats.ogrenci }}</div><div class="stat-label">Öğrenci</div></div>
+    <div class="stat-card"><div class="stat-num">{{ stats.danisman }}</div><div class="stat-label">Danışman</div></div>
+    <div class="stat-card"><div class="stat-num">{{ stats.bekleyen_gunluk }}</div><div class="stat-label">Bekleyen günlük</div></div>
+</div>

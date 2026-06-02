@@ -1,0 +1,61 @@
+<div class="dashboard-grid">
+    <section class="card">
+        <h2>Şirket Ekle</h2>
+        <form action="{{ url_for('admin_add_company') }}" method="POST" class="stack-form">
+            <input type="text" name="name" placeholder="Şirket adı *" required>
+            <input type="text" name="sector" placeholder="Sektör">
+            <input type="text" name="contact" placeholder="İletişim">
+            <button type="submit" class="btn-main">Kaydet</button>
+        </form>
+    </section>
+
+    <section class="card">
+        <h2>İlan Aç</h2>
+        <form action="{{ url_for('admin_add_program') }}" method="POST" class="stack-form">
+            <select name="company_id" required>
+                <option value="">Şirket seç</option>
+                {% for c in companies %}
+                <option value="{{ c.id }}">{{ c.name }}</option>
+                {% endfor %}
+            </select>
+            <input type="text" name="title" placeholder="İlan başlığı *" required>
+            <textarea name="description" rows="2" placeholder="Açıklama"></textarea>
+            <select name="type">
+                <option value="Zorunlu">Zorunlu</option>
+                <option value="Gönüllü">Gönüllü</option>
+            </select>
+            <input type="date" name="start" required>
+            <input type="date" name="end">
+            <input type="number" name="quota" value="3" min="1">
+            <button type="submit" class="btn-main">Yayınla</button>
+        </form>
+    </section>
+</div>
+
+<section class="card full-width">
+    <h2>Yayındaki İlanlar</h2>
+    {% if programs %}
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Şirket</th><th>İlan</th><th>Kontenjan</th><th>Durum</th><th></th></tr></thead>
+            <tbody>
+                {% for p in programs %}
+                <tr>
+                    <td>{{ p.company.name }}</td>
+                    <td>{{ p.title }}</td>
+                    <td>{{ p.quota }}</td>
+                    <td>{% if p.is_active %}<span class="badge badge-onaylandi">Açık</span>{% else %}<span class="badge badge-reddedildi">Kapalı</span>{% endif %}</td>
+                    <td>
+                        <form method="POST" action="{{ url_for('admin_toggle_program', program_id=p.id) }}" class="inline-form">
+                            <button type="submit" class="btn-sm btn-ok">{{ 'Kapat' if p.is_active else 'Aç' }}</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="empty">İlan yok.</p>
+    {% endif %}
+</section>

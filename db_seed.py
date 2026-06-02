@@ -1,14 +1,14 @@
-"""Demo kullanıcı, şirket, staj programı ve örnek veriler."""
+# StajFlow - demo kullanicilar ve baslangic verileri
 from werkzeug.security import generate_password_hash
 
-from models import db, User, Company, InternshipProgram, Internship, DailyLog
+from models import db, User, Company, InternshipProgram
 
-ROLE_ALIASES = {
-    'danishman': 'danisman',
-    'danisman': 'danisman',
-    'advisor': 'danisman',
-    'ogrenci': 'ogrenci',
+# farkli yazilmis rolleri duzeltmek icin
+ROLE_MAP = {
     'student': 'ogrenci',
+    'ogrenci': 'ogrenci',
+    'advisor': 'danisman',
+    'danisman': 'danisman',
     'admin': 'admin',
 }
 
@@ -18,147 +18,83 @@ DEMO_USERS = [
     ('ogr@staj.edu.tr', 'ogr123', 'Ayşe Demir', 'ogrenci'),
 ]
 
-LEGACY_REMOVE_EMAILS = (
-    'ahmet@staj.edu.tr',
-    'ayse@ogrenci.edu.tr',
-    'mehmet@ogrenci.edu.tr',
-    'ali@staj.edu.tr',
-    'hoca@staj.edu.tr',
-)
-
 
 def normalize_role(role):
     if not role:
         return 'ogrenci'
-    return ROLE_ALIASES.get(role.strip().lower(), role.strip().lower())
+    return ROLE_MAP.get(role.strip().lower(), role.strip().lower())
 
 
-def is_danisman(role):
-    return normalize_role(role) == 'danisman'
+def seed_demo_users():
+    if User.query.first():
+        return
 
-
-def remove_legacy_users():
-    for email in LEGACY_REMOVE_EMAILS:
-        user = User.query.filter_by(email=email).first()
-        if not user:
-            continue
-        DailyLog.query.filter_by(student_id=user.id).delete()
-        Internship.query.filter_by(student_id=user.id).delete()
-        db.session.delete(user)
+    for email, sifre, isim, rol in DEMO_USERS:
+        db.session.add(User(
+            email=email,
+            password=generate_password_hash(sifre),
+            name=isim,
+            role=rol,
+        ))
     db.session.commit()
 
-
-def ensure_demo_users():
-    remove_legacy_users()
-    changed = False
-    for email, pwd, name, role in DEMO_USERS:
-        role = normalize_role(role)
-        user = User.query.filter_by(email=email).first()
-        if not user:
-            db.session.add(User(
-                email=email,
-                password=generate_password_hash(pwd),
-                name=name,
-                role=role,
-            ))
-            changed = True
-        else:
-            user.password = generate_password_hash(pwd)
-            user.name = name
-            user.role = role
-    if changed:
+    ogr = User.query.filter_by(email='ogr@staj.edu.tr').first()
+    if ogr:
+        ogr.student_no = '2021001001'
+        ogr.department = 'Bilgisayar Mühendisliği'
         db.session.commit()
 
-    for user in User.query.all():
-        fixed = normalize_role(user.role)
-        if user.role != fixed:
-            user.role = fixed
-    db.session.commit()
 
-
-def ensure_companies_and_programs():
+def seed_sirketler():
     if Company.query.first():
         return
 
-    c1 = Company(name='Anadolu Yazılım A.Ş.', sector='Yazılım', contact='info@anadolu.com', address='İstanbul')
-    c2 = Company(name='Tekno A.Ş.', sector='Teknoloji', contact='hr@tekno.com', address='Ankara')
-    c3 = Company(name='DataHub Ltd.', sector='Veri Bilimi', contact='staj@datahub.com', address='İzmir')
-    db.session.add_all([c1, c2, c3])
+    sirketler = [
+        Company(name='Anadolu Yazılım A.Ş.', sector='Yazılım', contact='info@anadolu.com', address='İstanbul'),
+        Company(name='Tekno A.Ş.', sector='Teknoloji', contact='hr@tekno.com', address='Ankara'),
+        Company(name='DataHub Ltd.', sector='Veri Bilimi', contact='staj@datahub.com', address='İzmir'),
+    ]
+    db.session.add_all(sirketler)
     db.session.flush()
 
-    programs = [
+    ilanlar = [
         InternshipProgram(
-            company_id=c1.id,
+            company_id=sirketler[0].id,
             title='Backend Geliştirme Stajı',
-            description='Python/Flask ile API geliştirme, ekip çalışması.',
+            description='Python/Flask ile API geliştirme.',
             internship_type='Zorunlu',
             start_date='2026-06-01',
             end_date='2026-08-31',
             quota=3,
         ),
         InternshipProgram(
-            company_id=c2.id,
+            company_id=sirketler[1].id,
             title='Frontend Staj Programı',
-            description='React arayüz geliştirme ve UI testleri.',
+            description='React arayüz geliştirme.',
             internship_type='Gönüllü',
             start_date='2026-07-01',
             end_date='2026-09-30',
             quota=2,
         ),
         InternshipProgram(
-            company_id=c3.id,
+            company_id=sirketler[2].id,
             title='Veri Analizi Stajı',
-            description='SQL, raporlama ve dashboard çalışmaları.',
+            description='SQL ve raporlama calismalari.',
             internship_type='Zorunlu',
             start_date='2026-06-15',
             end_date='2026-08-15',
             quota=2,
         ),
     ]
-    db.session.add_all(programs)
+    db.session.add_all(ilanlar)
     db.session.commit()
-
-
-def ensure_sample_data():
-    ogr = User.query.filter_by(email='ogr@staj.edu.tr').first()
-    if not ogr:
-        return
-    if not ogr.student_no:
-        ogr.student_no = '2021001001'
-        ogr.department = 'Bilgisayar Mühendisliği'
-
-    db.session.commit()
-
-
-def _schema_ok(db):
-    from sqlalchemy import inspect
-
-    insp = inspect(db.engine)
-    if not insp.has_table('user'):
-        return False
-    ucols = {c['name'] for c in insp.get_columns('user')}
-    if not {'student_no', 'department'}.issubset(ucols):
-        return False
-    if not insp.has_table('company'):
-        return False
-    if not insp.has_table('internship_program'):
-        return False
-    if insp.has_table('internship'):
-        icols = {c['name'] for c in insp.get_columns('internship')}
-        if not {'program_id', 'end_date', 'description'}.issubset(icols):
-            return False
-    return True
 
 
 def init_database(app):
     import os
-    from models import db
 
     os.makedirs(app.instance_path, exist_ok=True)
     with app.app_context():
-        if not _schema_ok(db):
-            db.drop_all()
         db.create_all()
-        ensure_demo_users()
-        ensure_companies_and_programs()
-        ensure_sample_data()
+        seed_demo_users()
+        seed_sirketler()
