@@ -112,16 +112,18 @@ def allowed_file(filename):
 
 def save_document(student_id, file, doc_type):
     if not file or not file.filename:
-        return None
+        return True
     if not allowed_file(file.filename):
         flash('Geçersiz dosya türü. PDF, Word veya görsel yükleyin.', 'error')
-        return None
+        return False
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
     safe = secure_filename(file.filename)
     stored = f'{student_id}_{doc_type}_{int(datetime.utcnow().timestamp())}_{safe}'
-    file.save(os.path.join(app.config['UPLOAD_FOLDER'], stored))
     existing = StudentDocument.query.filter_by(student_id=student_id, doc_type=doc_type).first()
     if existing:
+        old_path = os.path.join(app.config['UPLOAD_FOLDER'], existing.filename)
+        if os.path.isfile(old_path):
+            os.remove(old_path)
         existing.filename = stored
         existing.original_name = file.filename
         existing.uploaded_at = datetime.utcnow()
@@ -132,7 +134,8 @@ def save_document(student_id, file, doc_type):
             filename=stored,
             original_name=file.filename,
         ))
-    return stored
+    file.save(os.path.join(app.config['UPLOAD_FOLDER'], stored))
+    return True
 
 
 @login_manager.user_loader
@@ -186,11 +189,14 @@ def dashboard():
 @app.route('/uploads/<path:filename>')
 @login_required
 def uploaded_file(filename):
-    if normalize_role(current_user.role) == 'admin':
-        pass
-    elif not filename.startswith(f'{current_user.id}_'):
+    filename = os.path.basename(filename)
+    role = normalize_role(current_user.role)
+    if role not in ('admin', 'danisman') and not filename.startswith(f'{current_user.id}_'):
         abort(403)
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+    folder = app.config['UPLOAD_FOLDER']
+    if not os.path.isfile(os.path.join(folder, filename)):
+        abort(404)
+    return send_from_directory(folder, filename)
 
 
 # ── Öğrenci sayfaları ──────────────────────────────────────────────
@@ -226,18 +232,33 @@ def ogrenci_home():
 @login_required
 @role_required('ogrenci')
 def ogrenci_profil():
-    current_user.gpa = request.form.get('gpa', type=float)
+    gpa = request.form.get('gpa', type=float)
+    if gpa is not None and not (0 <= gpa <= 4):
+        flash('GANO 0 ile 4 arasında olmalı.', 'error')
+        return redirect(url_for('ogrenci_home'))
+    current_user.gpa = gpa
     current_user.graduated_school = request.form.get('graduated_school', '').strip() or None
     current_user.department = request.form.get('department', '').strip() or None
     current_user.experience = request.form.get('experience', '').strip() or None
     current_user.foreign_language = request.form.get('foreign_language', '').strip() or None
     current_user.phone = request.form.get('phone', '').strip() or None
 
+    upload_ok = True
     for doc_type in ('cv', 'diploma', 'certificate', 'other'):
-        save_document(current_user.id, request.files.get(doc_type), doc_type)
+        f = request.files.get(doc_type)
+        if f and f.filename and not allowed_file(f.filename):
+            flash('Geçersiz dosya türü. PDF, Word veya görsel yükleyin.', 'error')
+            return redirect(url_for('ogrenci_home'))
 
-    db.session.commit()
-    flash('Profil ve belgeler güncellendi.', 'success')
+    for doc_type in ('cv', 'diploma', 'certificate', 'other'):
+        if not save_document(current_user.id, request.files.get(doc_type), doc_type):
+            upload_ok = False
+
+    if upload_ok:
+        db.session.commit()
+        flash('Profil ve belgeler güncellendi.', 'success')
+    else:
+        db.session.rollback()
     return redirect(url_for('ogrenci_home'))
 
 
@@ -478,6 +499,9 @@ def action_log(log_id, action):
 @role_required('danisman')
 def action_score(apply_id):
     record = Internship.query.get_or_404(apply_id)
+    if record.status != 'Onaylandı':
+        flash('Sadece onaylanmış stajlar puanlanabilir.', 'error')
+        return redirect(url_for('danisman_puanlama'))
     score = request.form.get('score', type=int)
     note = request.form.get('advisor_note', '').strip()
     if score is None or not (0 <= score <= 100):
@@ -615,6 +639,11 @@ def admin_delete_user(user_id):
     if user.id == current_user.id:
         flash('Kendi hesabınızı silemezsiniz.', 'error')
         return redirect(url_for('admin_ogrenciler'))
+    docs = StudentDocument.query.filter_by(student_id=user.id).all()
+    for doc in docs:
+        path = os.path.join(app.config['UPLOAD_FOLDER'], doc.filename)
+        if os.path.isfile(path):
+            os.remove(path)
     StudentDocument.query.filter_by(student_id=user.id).delete()
     DailyLog.query.filter_by(student_id=user.id).delete()
     Internship.query.filter_by(student_id=user.id).delete()

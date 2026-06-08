@@ -89,7 +89,7 @@ def ensure_demo_users():
     ogr = User.query.filter_by(email='ogr@staj.edu.tr').first()
     if ogr:
         ogr.gpa = 3.42
-        ogr.graduated_school = 'Anadolu Lisesi'
+        ogr.graduated_school = 'Önlisans - Bilgisayar Programcılığı'
         ogr.experience = 'Freelance web projeleri, okul kulübü yazılım ekibi'
         ogr.foreign_language = 'İngilizce — B2'
     danisman = User.query.filter_by(email='danisman@staj.edu.tr').first()
