@@ -117,7 +117,7 @@ def dashboard():
             'sirket_sayisi': Company.query.filter_by(is_active=True).count(),
         }
         return render_template(
-            'admin.html', users=users, stats=stats, companies=companies, programs=programs
+            'admin/ozet.html', users=users, stats=stats, companies=companies, programs=programs
         )
 
     if role == 'danisman':
@@ -140,7 +140,7 @@ def dashboard():
             .all()
         )
         return render_template(
-            'advisor.html',
+            'danisman/ozet.html',
             logs=logs,
             applies=applies,
             approved_logs=approved_logs,
@@ -167,7 +167,7 @@ def dashboard():
         p.slots_left = program_slots_left(p)
     can_apply = apply is None or apply.status == 'Reddedildi'
     return render_template(
-        'student.html', logs=logs, apply=apply, programs=programs, can_apply=can_apply
+        'ogrenci/ozet.html', logs=logs, apply=apply, programs=programs, can_apply=can_apply
     )
 
 
@@ -220,6 +220,7 @@ def add_log():
         student_id=current_user.id,
         student_name=current_user.name,
         content=content,
+        hours=request.form.get('hours', type=int),
         status='Beklemede',
     ))
     db.session.commit()
@@ -361,9 +362,26 @@ def admin_toggle_program(program_id):
     return redirect(url_for('dashboard'))
 
 
+@app.route('/action/score/<int:apply_id>', methods=['POST'])
+@login_required
+@role_required('danisman')
+def action_score(apply_id):
+    record = Internship.query.get_or_404(apply_id)
+    score = request.form.get('score', type=int)
+    note = request.form.get('advisor_note', '').strip()
+    if score is None or not (0 <= score <= 100):
+        flash('Geçerli bir puan girin (0-100).', 'error')
+        return redirect(url_for('dashboard'))
+    record.score = score
+    record.advisor_note = note or None
+    db.session.commit()
+    flash(f'{record.student.name} için puan kaydedildi: {score}/100', 'success')
+    return redirect(url_for('dashboard'))
+
+
 with app.app_context():
     init_database(app)
 
 
 if __name__ == '__main__':
-    app.run(debug=True)s
+    app.run(debug=True)

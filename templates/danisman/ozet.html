@@ -158,12 +158,12 @@
     </div>
     {% set onaylananlar = [] %}
     {% for a in recent_applies %}
-        {% if a.status == 'Onaylandi' and a.score is none %}
+        {% if a.status == 'Onaylandı' and a.score is none %}
             {% if onaylananlar.append(a) %}{% endif %}
         {% endif %}
     {% endfor %}
-    {% set puanlanacaklar = applies | selectattr('status','equalto','Onaylandi') | list %}
-    {% set tumOnaylananlar = recent_applies | selectattr('status','equalto','Onaylandi') | list %}
+    {% set puanlanacaklar = applies | selectattr('status','equalto','Onaylandı') | list %}
+    {% set tumOnaylananlar = recent_applies | selectattr('status','equalto','Onaylandı') | list %}
     {% if tumOnaylananlar %}
     <div class="approval-list">
         {% for a in tumOnaylananlar %}

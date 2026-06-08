@@ -25,6 +25,10 @@ def normalize_role(role):
     return ROLE_MAP.get(role.strip().lower(), role.strip().lower())
 
 
+def is_danisman(role):
+    return normalize_role(role) == 'danisman'
+
+
 def seed_demo_users():
     if User.query.first():
         return
@@ -90,11 +94,30 @@ def seed_sirketler():
     db.session.commit()
 
 
+def _ensure_columns():
+    """Eski veritabanlarina eksik sutunlari ekler (SQLite)."""
+    from sqlalchemy import inspect, text
+
+    inspector = inspect(db.engine)
+    if 'internship' in inspector.get_table_names():
+        cols = {c['name'] for c in inspector.get_columns('internship')}
+        if 'score' not in cols:
+            db.session.execute(text('ALTER TABLE internship ADD COLUMN score INTEGER'))
+        if 'advisor_note' not in cols:
+            db.session.execute(text('ALTER TABLE internship ADD COLUMN advisor_note TEXT'))
+    if 'daily_log' in inspector.get_table_names():
+        cols = {c['name'] for c in inspector.get_columns('daily_log')}
+        if 'hours' not in cols:
+            db.session.execute(text('ALTER TABLE daily_log ADD COLUMN hours INTEGER'))
+    db.session.commit()
+
+
 def init_database(app):
     import os
 
     os.makedirs(app.instance_path, exist_ok=True)
     with app.app_context():
         db.create_all()
+        _ensure_columns()
         seed_demo_users()
         seed_sirketler()
