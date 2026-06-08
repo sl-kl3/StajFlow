@@ -1,4 +1,7 @@
-<section class="card approval-section">
+{% extends "base.html" %}
+{% block content %}
+<section class="card full-width">
+    <h2><i class="ti ti-clock"></i> Onaylanacak Staj Başvuruları</h2>
     {% if applies %}
     <div class="approval-list">
         {% for a in applies %}
@@ -9,14 +12,17 @@
                     <div>
                         <strong>{{ a.student.name if a.student else 'Öğrenci' }}</strong>
                         {% if a.student and a.student.student_no %}
-                        <span class="sub">{{ a.student.student_no }}</span>
+                        <span class="sub">{{ a.student.student_no }} · {{ a.student.department or '' }}</span>
                         {% endif %}
                     </div>
                 </div>
                 <div class="approval-detail">
                     <p class="detail-title">{{ a.company_name }}</p>
                     {% if a.program %}<p class="detail-sub">{{ a.program.title }}</p>{% endif %}
-                    <p class="detail-meta">{{ a.internship_type }} · {{ a.start_date }}</p>
+                    <p class="detail-meta">
+                        <span class="badge badge-type">{{ a.internship_type }}</span>
+                        <span>{{ a.start_date }}{% if a.end_date %} – {{ a.end_date }}{% endif %}</span>
+                    </p>
                 </div>
             </div>
             <div class="approval-actions">
@@ -34,3 +40,4 @@
     <div class="empty-state"><i class="ti ti-circle-check"></i><p>Bekleyen başvuru yok.</p></div>
     {% endif %}
 </section>
+{% endblock %}

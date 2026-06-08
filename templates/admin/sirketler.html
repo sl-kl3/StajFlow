@@ -1,50 +1,63 @@
+{% extends "base.html" %}
+{% block content %}
 <div class="dashboard-grid">
     <section class="card">
-        <h2>Şirket Ekle</h2>
+        <h2><i class="ti ti-building"></i> Şirket Kaydı</h2>
         <form action="{{ url_for('admin_add_company') }}" method="POST" class="stack-form">
             <input type="text" name="name" placeholder="Şirket adı *" required>
             <input type="text" name="sector" placeholder="Sektör">
-            <input type="text" name="contact" placeholder="İletişim">
+            <input type="text" name="contact" placeholder="İletişim e-posta">
+            <input type="text" name="address" placeholder="Adres">
             <button type="submit" class="btn-main">Kaydet</button>
         </form>
     </section>
 
     <section class="card">
-        <h2>İlan Aç</h2>
+        <h2><i class="ti ti-briefcase"></i> Staj İlanı Aç</h2>
         <form action="{{ url_for('admin_add_program') }}" method="POST" class="stack-form">
             <select name="company_id" required>
-                <option value="">Şirket seç</option>
+                <option value="">Şirket seç *</option>
                 {% for c in companies %}
                 <option value="{{ c.id }}">{{ c.name }}</option>
                 {% endfor %}
             </select>
             <input type="text" name="title" placeholder="İlan başlığı *" required>
-            <textarea name="description" rows="2" placeholder="Açıklama"></textarea>
+            <textarea name="description" rows="3" placeholder="Açıklama"></textarea>
             <select name="type">
-                <option value="Zorunlu">Zorunlu</option>
-                <option value="Gönüllü">Gönüllü</option>
+                <option value="Zorunlu">Zorunlu Staj</option>
+                <option value="Gönüllü">Gönüllü Staj</option>
             </select>
             <input type="date" name="start" required>
             <input type="date" name="end">
-            <input type="number" name="quota" value="3" min="1">
-            <button type="submit" class="btn-main">Yayınla</button>
+            <input type="number" name="quota" value="3" min="1" max="50">
+            <button type="submit" class="btn-main">İlanı Yayınla</button>
         </form>
     </section>
 </div>
 
 <section class="card full-width">
-    <h2>Yayındaki İlanlar</h2>
+    <h2>Yayındaki Staj İlanları</h2>
     {% if programs %}
     <div class="table-wrap">
         <table>
-            <thead><tr><th>Şirket</th><th>İlan</th><th>Kontenjan</th><th>Durum</th><th></th></tr></thead>
+            <thead>
+                <tr><th>Şirket</th><th>İlan</th><th>Tür</th><th>Tarih</th><th>Kontenjan</th><th>Durum</th><th></th></tr>
+            </thead>
             <tbody>
                 {% for p in programs %}
                 <tr>
                     <td>{{ p.company.name }}</td>
-                    <td>{{ p.title }}</td>
+                    <td><strong>{{ p.title }}</strong></td>
+                    <td>{{ p.internship_type }}</td>
+                    <td>{{ p.start_date }}</td>
                     <td>{{ p.quota }}</td>
-                    <td>{% if p.is_active %}<span class="badge badge-onaylandi">Açık</span>{% else %}<span class="badge badge-reddedildi">Kapalı</span>{% endif %}</td>
+                    <td>
+                        {% if p.is_active %}
+                        <span class="badge badge-onaylandı">Yayında</span>
+                        {% else %}
+                        <span class="badge badge-reddedildi">Kapalı</span>
+                        {% endif %}
+                    </td>
                     <td>
                         <form method="POST" action="{{ url_for('admin_toggle_program', program_id=p.id) }}" class="inline-form">
                             <button type="submit" class="btn-sm btn-ok">{{ 'Kapat' if p.is_active else 'Aç' }}</button>
@@ -56,6 +69,7 @@
         </table>
     </div>
     {% else %}
-    <p class="empty">İlan yok.</p>
+    <p class="empty">Henüz ilan yok.</p>
     {% endif %}
 </section>
+{% endblock %}

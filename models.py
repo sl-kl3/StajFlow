@@ -27,9 +27,25 @@ class User(UserMixin, db.Model):
     department = db.Column(db.String(100), nullable=True)
     role = db.Column(db.String(20), nullable=False)
     university_id = db.Column(db.Integer, db.ForeignKey('university.id'), nullable=True)
+    title = db.Column(db.String(100), nullable=True)
+    gpa = db.Column(db.Float, nullable=True)
+    graduated_school = db.Column(db.String(150), nullable=True)
+    experience = db.Column(db.Text, nullable=True)
+    foreign_language = db.Column(db.String(120), nullable=True)
+    phone = db.Column(db.String(30), nullable=True)
 
     internships = db.relationship('Internship', backref='student', lazy=True)
     daily_logs = db.relationship('DailyLog', backref='student', lazy=True)
+    documents = db.relationship('StudentDocument', backref='student', lazy=True)
+
+
+class StudentDocument(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    doc_type = db.Column(db.String(30), nullable=False)
+    filename = db.Column(db.String(200), nullable=False)
+    original_name = db.Column(db.String(200), nullable=False)
+    uploaded_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 
 class Company(db.Model):
@@ -44,7 +60,6 @@ class Company(db.Model):
 
 
 class InternshipProgram(db.Model):
-    """Şirketin açtığı staj ilanı — öğrenci buradan seçer."""
     id = db.Column(db.Integer, primary_key=True)
     company_id = db.Column(db.Integer, db.ForeignKey('company.id'), nullable=False)
     title = db.Column(db.String(150), nullable=False)
@@ -71,6 +86,7 @@ class Internship(db.Model):
     status = db.Column(db.String(20), default='Onay Bekliyor')
     score = db.Column(db.Integer, nullable=True)
     advisor_note = db.Column(db.Text, nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 
 class DailyLog(db.Model):

@@ -1,33 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
 <section class="card">
-    <h2>Kullanıcı Ekle</h2>
+    <h2><i class="ti ti-user-plus"></i> Kullanıcı Ekle</h2>
     <form action="{{ url_for('admin_add_user') }}" method="POST" class="stack-form">
-        <input type="text" name="name" placeholder="Ad soyad" required>
-        <input type="email" name="email" placeholder="E-posta" required>
-        <input type="password" name="password" placeholder="Şifre" required>
-        <select name="role">
-            <option value="ogrenci">Öğrenci</option>
-            <option value="danisman">Danışman</option>
-            <option value="admin">Admin</option>
-        </select>
-        <button type="submit" class="btn-main">Ekle</button>
+        <div class="form-grid">
+            <input type="text" name="name" placeholder="Ad Soyad *" required>
+            <input type="email" name="email" placeholder="Kurumsal e-posta *" required>
+            <input type="password" name="password" placeholder="Şifre *" required>
+            <select name="role">
+                <option value="ogrenci">Öğrenci</option>
+                <option value="danisman">Danışman</option>
+                <option value="admin">Yönetici</option>
+            </select>
+            <input type="text" name="student_no" placeholder="Öğrenci no">
+            <input type="text" name="department" placeholder="Bölüm">
+        </div>
+        <button type="submit" class="btn-main">Kullanıcı Ekle</button>
     </form>
 </section>
 
 <section class="card full-width">
-    <h2>Kayıtlı Kullanıcılar</h2>
+    <h2><i class="ti ti-users"></i> Kullanıcılar</h2>
     <div class="table-wrap">
         <table>
-            <thead><tr><th>Ad</th><th>E-posta</th><th>Rol</th><th></th></tr></thead>
+            <thead><tr><th>Ad</th><th>E-posta</th><th>Rol</th><th>Bölüm</th><th></th></tr></thead>
             <tbody>
                 {% for user in users %}
                 <tr>
                     <td>{{ user.name }}</td>
                     <td>{{ user.email }}</td>
                     <td>
-                        {% if normalize_role(user.role) == 'admin' %}Admin
-                        {% elif normalize_role(user.role) == 'danisman' %}Danışman
+                        {% if user.role == 'admin' %}Yönetici
+                        {% elif user.role == 'danisman' %}Danışman
                         {% else %}Öğrenci{% endif %}
                     </td>
+                    <td>{{ user.department or '—' }}</td>
                     <td>
                         {% if user.id != current_user.id %}
                         <form method="POST" action="{{ url_for('admin_delete_user', user_id=user.id) }}" class="inline-form" onsubmit="return confirm('Silinsin mi?');">
@@ -41,3 +48,4 @@
         </table>
     </div>
 </section>
+{% endblock %}

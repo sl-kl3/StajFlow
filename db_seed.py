@@ -83,6 +83,15 @@ def ensure_demo_users():
                 department=bolum,
                 university_id=uni.id,
             ))
+    ogr = User.query.filter_by(email='ogr@staj.edu.tr').first()
+    if ogr:
+        ogr.gpa = 3.42
+        ogr.graduated_school = 'Anadolu Lisesi'
+        ogr.experience = 'Freelance web projeleri, okul kulübü yazılım ekibi'
+        ogr.foreign_language = 'İngilizce — B2'
+    danisman = User.query.filter_by(email='danisman@staj.edu.tr').first()
+    if danisman:
+        danisman.title = 'Öğretim Üyesi'
     db.session.commit()
 
 
@@ -140,16 +149,28 @@ def _ensure_columns():
     from sqlalchemy import inspect, text
 
     inspector = inspect(db.engine)
+    user_cols = {
+        'university_id': 'INTEGER',
+        'title': 'VARCHAR(100)',
+        'gpa': 'FLOAT',
+        'graduated_school': 'VARCHAR(150)',
+        'experience': 'TEXT',
+        'foreign_language': 'VARCHAR(120)',
+        'phone': 'VARCHAR(30)',
+    }
     if 'user' in inspector.get_table_names():
         cols = {c['name'] for c in inspector.get_columns('user')}
-        if 'university_id' not in cols:
-            db.session.execute(text('ALTER TABLE user ADD COLUMN university_id INTEGER'))
+        for col, typ in user_cols.items():
+            if col not in cols:
+                db.session.execute(text(f'ALTER TABLE user ADD COLUMN {col} {typ}'))
     if 'internship' in inspector.get_table_names():
         cols = {c['name'] for c in inspector.get_columns('internship')}
         if 'score' not in cols:
             db.session.execute(text('ALTER TABLE internship ADD COLUMN score INTEGER'))
         if 'advisor_note' not in cols:
             db.session.execute(text('ALTER TABLE internship ADD COLUMN advisor_note TEXT'))
+        if 'created_at' not in cols:
+            db.session.execute(text('ALTER TABLE internship ADD COLUMN created_at DATETIME'))
     if 'daily_log' in inspector.get_table_names():
         cols = {c['name'] for c in inspector.get_columns('daily_log')}
         if 'hours' not in cols:

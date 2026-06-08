@@ -1,4 +1,7 @@
-<section class="card approval-section">
+{% extends "base.html" %}
+{% block content %}
+<section class="card full-width">
+    <h2><i class="ti ti-notebook"></i> Onaylanacak Günlük Kayıtları</h2>
     {% if logs %}
     <div class="approval-list">
         {% for l in logs %}
@@ -8,12 +11,10 @@
                     <span class="avatar">{{ l.student_name[0]|upper }}</span>
                     <div>
                         <strong>{{ l.student_name }}</strong>
-                        <span class="sub">{{ l.date.strftime('%d.%m.%Y %H:%M') }}</span>
+                        <span class="sub">{{ l.date.strftime('%d.%m.%Y %H:%M') }} · {{ l.hours or '?' }} saat</span>
                     </div>
                 </div>
-                <div class="approval-detail">
-                    <p class="log-preview log-box">{{ l.content }}</p>
-                </div>
+                <p class="log-preview log-box">{{ l.content }}</p>
             </div>
             <div class="approval-actions">
                 <form method="POST" action="{{ url_for('action_log', log_id=l.id, action='ok') }}">
@@ -30,3 +31,4 @@
     <div class="empty-state"><i class="ti ti-circle-check"></i><p>Bekleyen günlük yok.</p></div>
     {% endif %}
 </section>
+{% endblock %}

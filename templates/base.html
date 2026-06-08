@@ -3,66 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StajFlow | {{ institution_name }}</title>
+    <title>StajFlow | {{ page_title|default('Panel') }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 </head>
 <body>
     <div class="app">
         <aside class="sidebar">
-            <div class="sidebar-logo">
+            <div class="sidebar-brand">
                 <div class="sidebar-logo-icon"><i class="ti ti-briefcase"></i></div>
-                <div class="sidebar-logo-text">Staj<span>Flow</span></div>
+                <div>
+                    <div class="sidebar-logo-text">Staj<span>Flow</span></div>
+                    <div class="sidebar-sub">Staj Takip Sistemi</div>
+                </div>
             </div>
-            <p class="sidebar-institution">{{ institution_name }}</p>
-            <nav class="sidebar-nav" id="sidebar-nav">
-                <a href="{{ url_for('dashboard') }}" class="nav-item" data-nav="dashboard">
-                    <i class="ti ti-layout-dashboard"></i> Genel Bakış
-                </a>
+
+            <nav class="sidebar-nav">
                 {% if user_role == 'ogrenci' %}
-                <a href="#ogrenci-profil" class="nav-item nav-anchor" data-nav="ogrenci-profil">
-                    <i class="ti ti-user"></i> Profilim
+                <a href="{{ url_for('ogrenci_home') }}" class="nav-item {% if active_page == 'anasayfa' %}active{% endif %}">
+                    <i class="ti ti-home"></i> Ana Sayfa
                 </a>
-                <a href="#ilanlar" class="nav-item nav-anchor" data-nav="ilanlar">
+                <a href="{{ url_for('ogrenci_basvurularim') }}" class="nav-item {% if active_page == 'basvurularim' %}active{% endif %}">
+                    <i class="ti ti-file-text"></i> Başvurularım
+                </a>
+                <a href="{{ url_for('ogrenci_ilanlar') }}" class="nav-item {% if active_page == 'ilanlar' %}active{% endif %}">
                     <i class="ti ti-building"></i> Staj İlanları
                 </a>
-                <a href="#gunluk" class="nav-item nav-anchor" data-nav="gunluk">
-                    <i class="ti ti-notebook"></i> Günlüklerim
+                <a href="{{ url_for('ogrenci_gunluk') }}" class="nav-item {% if active_page == 'gunluk' %}active{% endif %}">
+                    <i class="ti ti-notebook"></i> Staj Günlüğüm
+                </a>
+                <a href="{{ url_for('ogrenci_degerlendirme') }}" class="nav-item {% if active_page == 'degerlendirme' %}active{% endif %}">
+                    <i class="ti ti-star"></i> Değerlendirme
                 </a>
                 {% elif user_role == 'danisman' %}
-                <a href="#onay-basvuru" class="nav-item nav-anchor" data-nav="onay-basvuru">
+                <a href="{{ url_for('danisman_home') }}" class="nav-item {% if active_page == 'anasayfa' %}active{% endif %}">
+                    <i class="ti ti-home"></i> Ana Sayfa
+                </a>
+                <a href="{{ url_for('danisman_basvurular') }}" class="nav-item {% if active_page == 'basvurular' %}active{% endif %}">
                     <i class="ti ti-briefcase"></i> Başvuru Onayı
                 </a>
-                <a href="#onay-gunluk" class="nav-item nav-anchor" data-nav="onay-gunluk">
+                <a href="{{ url_for('danisman_gunluk') }}" class="nav-item {% if active_page == 'gunluk' %}active{% endif %}">
                     <i class="ti ti-notebook"></i> Günlük Onayı
                 </a>
-                <a href="#puanlama" class="nav-item nav-anchor" data-nav="puanlama">
+                <a href="{{ url_for('danisman_puanlama') }}" class="nav-item {% if active_page == 'puanlama' %}active{% endif %}">
                     <i class="ti ti-star"></i> Puanlama
                 </a>
                 {% elif user_role == 'admin' %}
-                <a href="#kullanici-ekle" class="nav-item nav-anchor" data-nav="kullanici-ekle">
-                    <i class="ti ti-user-plus"></i> Kullanıcı Ekle
+                <a href="{{ url_for('admin_home') }}" class="nav-item {% if active_page == 'anasayfa' %}active{% endif %}">
+                    <i class="ti ti-layout-dashboard"></i> Dashboard
                 </a>
-                <a href="#sirket-ilan" class="nav-item nav-anchor" data-nav="sirket-ilan">
-                    <i class="ti ti-building"></i> Şirket & İlan
+                <a href="{{ url_for('admin_ogrenciler') }}" class="nav-item {% if active_page == 'ogrenciler' %}active{% endif %}">
+                    <i class="ti ti-users"></i> Öğrenciler
+                </a>
+                <a href="{{ url_for('admin_basvurular') }}" class="nav-item {% if active_page == 'basvurular' %}active{% endif %}">
+                    <i class="ti ti-file-text"></i> Başvurular
+                </a>
+                <a href="{{ url_for('admin_sirketler') }}" class="nav-item {% if active_page == 'sirketler' %}active{% endif %}">
+                    <i class="ti ti-building"></i> Şirketler
+                </a>
+                <a href="{{ url_for('admin_raporlar') }}" class="nav-item {% if active_page == 'raporlar' %}active{% endif %}">
+                    <i class="ti ti-chart-bar"></i> Raporlar
                 </a>
                 {% endif %}
-                <a href="{{ url_for('logout') }}" class="nav-item logout">
-                    <i class="ti ti-logout"></i> Çıkış
-                </a>
             </nav>
-            <div class="user-profile">
-                <p class="profile-name">{{ current_user.name }}</p>
-                <span class="role-badge role-{{ user_role }}">
-                    {% if user_role == 'admin' %}Yönetici
-                    {% elif user_role == 'danisman' %}Danışman
-                    {% else %}Öğrenci{% endif %}
-                </span>
-            </div>
+
+            <a href="{{ url_for('logout') }}" class="nav-item logout">
+                <i class="ti ti-logout"></i> Çıkış
+            </a>
         </aside>
 
         <main class="main-content">
+            <header class="page-header-bar">
+                <div>
+                    <h1 class="page-title">{{ page_title|default('Ana Sayfa') }}</h1>
+                    <p class="page-sub">{{ institution_name }}</p>
+                </div>
+                <div class="header-user">
+                    <div class="header-user-text">
+                        <span class="header-greet">Hoş geldin,</span>
+                        <strong>{{ current_user.name }}</strong>
+                        <span class="header-date">{{ today_str }}</span>
+                    </div>
+                    <div class="header-avatar">{{ current_user.name[0]|upper }}</div>
+                </div>
+            </header>
+
             {% with messages = get_flashed_messages(with_categories=true) %}
               {% if messages %}
                 <div class="flash-list">
@@ -72,69 +98,9 @@
                 </div>
               {% endif %}
             {% endwith %}
+
             {% block content %}{% endblock %}
         </main>
     </div>
-    <script>
-      document.getElementById('today-date')?.append(
-        new Date().toLocaleDateString('tr-TR', { weekday:'long', day:'numeric', month:'long', year:'numeric' })
-      );
-
-      (function () {
-        const nav = document.getElementById('sidebar-nav');
-        if (!nav) return;
-
-        const anchors = document.querySelectorAll('.nav-anchor');
-        const sections = [...anchors]
-          .map((a) => document.querySelector(a.getAttribute('href')))
-          .filter(Boolean);
-
-        function setActive(id) {
-          nav.querySelectorAll('.nav-item').forEach((el) => el.classList.remove('active'));
-          const target = document.querySelector('[data-nav="' + id + '"]');
-          if (target?.classList.contains('nav-item')) {
-            target.classList.add('active');
-          } else {
-            nav.querySelector('[data-nav="dashboard"]')?.classList.add('active');
-          }
-          document.querySelectorAll('.advisor-tab').forEach((el) => el.classList.remove('active'));
-          document.querySelector('.advisor-tab[data-nav="' + id + '"]')?.classList.add('active');
-        }
-
-        anchors.forEach((link) => {
-          link.addEventListener('click', (e) => {
-            const href = link.getAttribute('href');
-            if (!href?.startsWith('#')) return;
-            const section = document.querySelector(href);
-            if (!section) return;
-            e.preventDefault();
-            section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            setActive(link.dataset.nav);
-            history.replaceState(null, '', href);
-          });
-        });
-
-        if (sections.length) {
-          const observer = new IntersectionObserver((entries) => {
-            const visible = entries
-              .filter((e) => e.isIntersecting)
-              .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-            if (visible?.target?.id) setActive(visible.target.id);
-          }, { rootMargin: '-30% 0px -55% 0px', threshold: [0.1, 0.4, 0.7] });
-
-          sections.forEach((s) => observer.observe(s));
-        } else {
-          setActive('dashboard');
-        }
-
-        if (location.hash) {
-          const section = document.querySelector(location.hash);
-          if (section) {
-            setTimeout(() => section.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-            setActive(location.hash.slice(1));
-          }
-        }
-      })();
-    </script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 __pycache__/
 *.py[cod]
 instance/
+instance/uploads/
 *.db
 .env
 venv/

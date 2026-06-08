@@ -1,4 +1,7 @@
+{% extends "base.html" %}
+{% block content %}
 <section class="card full-width">
+    <h2><i class="ti ti-building"></i> Şirket Staj İlanları</h2>
     {% if can_apply %}
     <p class="hint">Başvurmak istediğin ilanın altındaki butona bas.</p>
     {% else %}
@@ -16,8 +19,8 @@
             <h3>{{ p.title }}</h3>
             <p class="log-preview">{{ p.description or '—' }}</p>
             <p class="program-meta">
-                {{ p.start_date }}{% if p.end_date %} – {{ p.end_date }}{% endif %}
-                · {{ p.slots_left }}/{{ p.quota }} kontenjan
+                <i class="ti ti-calendar"></i> {{ p.start_date }}{% if p.end_date %} – {{ p.end_date }}{% endif %}
+                · <i class="ti ti-users"></i> {{ p.slots_left }}/{{ p.quota }} kontenjan
             </p>
             {% if can_apply and p.slots_left > 0 %}
             <form method="POST" action="{{ url_for('apply_program', program_id=p.id) }}">
@@ -35,3 +38,4 @@
     <p class="empty">Yayında ilan yok.</p>
     {% endif %}
 </section>
+{% endblock %}

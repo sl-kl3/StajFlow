@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="stats-grid">
+    <div class="stat-card purple">
+        <div class="stat-num">{{ stats.total }}</div>
+        <div class="stat-label">Toplam Kullanıcı</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-num">{{ stats.ogrenci }}</div>
+        <div class="stat-label">Öğrenci</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-num">{{ stats.danisman }}</div>
+        <div class="stat-label">Danışman</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-num">{{ stats.sirket_sayisi }}</div>
+        <div class="stat-label">Kayıtlı Şirket</div>
+    </div>
+    <div class="stat-card warn">
+        <div class="stat-num">{{ stats.bekleyen_basvuru }}</div>
+        <div class="stat-label">Bekleyen Başvuru</div>
+    </div>
+    <div class="stat-card success">
+        <div class="stat-num">{{ stats.onaylanan }}</div>
+        <div class="stat-label">Onaylanan Staj</div>
+    </div>
+    <div class="stat-card danger">
+        <div class="stat-num">{{ stats.reddedilen }}</div>
+        <div class="stat-label">Reddedilen</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-num">{{ stats.program_sayisi }}</div>
+        <div class="stat-label">Açık İlan</div>
+    </div>
+</div>
+
+<section class="card">
+    <h2><i class="ti ti-chart-bar"></i> Sistem Özeti</h2>
+    <p class="hint">{{ institution_name }} staj takip sistemi genel durum raporu. Detaylı başvuru listesi için <a href="{{ url_for('admin_basvurular') }}">Başvurular</a> sayfasına gidin.</p>
+</section>
+{% endblock %}
