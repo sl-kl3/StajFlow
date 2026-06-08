@@ -6,6 +6,18 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 
+class University(db.Model):
+    """Kurum bilgisi — her üniversite kendi örneğini yapılandırabilir."""
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(150), nullable=False)
+    short_name = db.Column(db.String(40), nullable=True)
+    domain = db.Column(db.String(80), nullable=True)
+    city = db.Column(db.String(80), nullable=True)
+    is_active = db.Column(db.Boolean, default=True)
+
+    users = db.relationship('User', backref='university', lazy=True)
+
+
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
@@ -14,6 +26,7 @@ class User(UserMixin, db.Model):
     student_no = db.Column(db.String(20), nullable=True)
     department = db.Column(db.String(100), nullable=True)
     role = db.Column(db.String(20), nullable=False)
+    university_id = db.Column(db.Integer, db.ForeignKey('university.id'), nullable=True)
 
     internships = db.relationship('Internship', backref='student', lazy=True)
     daily_logs = db.relationship('DailyLog', backref='student', lazy=True)

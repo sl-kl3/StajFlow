@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
-<header class="topbar advisor-topbar">
+<header class="topbar advisor-topbar topbar-sticky">
     <div>
         <h1 class="topbar-title">Danışman <span>Onay Paneli</span></h1>
-        <p class="topbar-date" id="today-date"></p>
+        <p class="topbar-date">{{ institution_name }} · <span id="today-date"></span></p>
     </div>
     {% if stats.toplam_bekleyen > 0 %}
     <div class="pending-pill">
@@ -36,17 +36,17 @@
 </div>
 
 <nav class="advisor-tabs">
-    <a href="#onay-basvuru" class="advisor-tab active">
+    <a href="#onay-basvuru" class="advisor-tab active nav-anchor" data-nav="onay-basvuru">
         <i class="ti ti-briefcase"></i> Staj Başvuruları
         {% if stats.bekleyen_basvuru %}<span class="tab-badge">{{ stats.bekleyen_basvuru }}</span>{% endif %}
     </a>
-    <a href="#onay-gunluk" class="advisor-tab">
+    <a href="#onay-gunluk" class="advisor-tab nav-anchor" data-nav="onay-gunluk">
         <i class="ti ti-notebook"></i> Günlük Kayıtları
         {% if stats.bekleyen_gunluk %}<span class="tab-badge">{{ stats.bekleyen_gunluk }}</span>{% endif %}
     </a>
 </nav>
 
-<section class="card approval-section" id="onay-basvuru">
+<section class="card approval-section panel-section" id="onay-basvuru">
     <div class="card-header">
         <h2><i class="ti ti-clock"></i> Onaylanacak Staj Başvuruları</h2>
         <span class="section-hint">Öğrenci şirket ilanına başvurdu — onayla veya reddet</span>
@@ -104,7 +104,7 @@
     {% endif %}
 </section>
 
-<section class="card approval-section" id="onay-gunluk">
+<section class="card approval-section panel-section" id="onay-gunluk">
     <div class="card-header">
         <h2><i class="ti ti-notebook"></i> Onaylanacak Günlük Kayıtları</h2>
         <span class="section-hint">Stajı onaylanmış öğrencinin günlüğü</span>
@@ -151,7 +151,7 @@
 </section>
 
 
-<section class="card full-width" id="puanlama">
+<section class="card full-width panel-section" id="puanlama">
     <div class="card-header">
         <h2><i class="ti ti-star"></i> Staj Puanlama</h2>
         <span class="section-hint">Onaylanan stajlar icin danishman degerlendirmesi</span>
@@ -217,14 +217,14 @@
                 <tr>
                     <td>Staj başvurusu</td>
                     <td>{{ a.student.name if a.student else '—' }} — {{ a.company_name }}</td>
-                    <td><span class="badge badge-{{ a.status|lower|replace(' ','-')|replace('ı','i') }}">{{ a.status }}</span></td>
+                    <td><span class="badge badge-{{ a.status|status_badge }}">{{ a.status }}</span></td>
                 </tr>
                 {% endfor %}
                 {% for l in approved_logs %}
                 <tr>
                     <td>Günlük</td>
                     <td>{{ l.student_name }} — {{ l.content[:60] }}{% if l.content|length > 60 %}…{% endif %}</td>
-                    <td><span class="badge badge-{{ l.status|lower|replace('ı','i') }}">{{ l.status }}</span></td>
+                    <td><span class="badge badge-{{ l.status|status_badge }}">{{ l.status }}</span></td>
                 </tr>
                 {% endfor %}
             </tbody>

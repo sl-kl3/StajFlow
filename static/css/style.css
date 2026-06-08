@@ -20,6 +20,8 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
+html { scroll-behavior: smooth; }
+
 body {
     font-family: 'DM Sans', 'Segoe UI', sans-serif;
     color: var(--text);
@@ -252,6 +254,15 @@ textarea { min-height: 110px; resize: vertical; }
 
 .sidebar-logo-text span { color: #c4b5fd; }
 
+.sidebar-institution {
+    font-size: 11px;
+    line-height: 1.4;
+    color: rgba(255,255,255,0.65);
+    padding: 0 10px 16px;
+    margin-top: -20px;
+    margin-bottom: 8px;
+}
+
 .sidebar-nav { flex: 1; }
 
 .nav-item {
@@ -310,6 +321,19 @@ textarea { min-height: 110px; resize: vertical; }
 }
 
 .topbar { margin-bottom: 24px; }
+
+.topbar-sticky {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: linear-gradient(180deg, var(--surface2) 70%, rgba(250, 249, 255, 0));
+    padding: 8px 0 16px;
+    margin-bottom: 16px;
+}
+
+.panel-section {
+    scroll-margin-top: 88px;
+}
 
 .topbar-title {
     font-family: 'Outfit', sans-serif;
@@ -569,7 +593,7 @@ th { color: var(--text3); font-size: 12px; font-weight: 600; }
 }
 
 .approval-section {
-    scroll-margin-top: 20px;
+    scroll-margin-top: 88px;
     margin-bottom: 24px;
 }
 

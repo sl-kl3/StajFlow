@@ -3,9 +3,9 @@ from functools import wraps
 
 from flask import Flask, render_template, redirect, url_for, request, flash, abort
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
-from models import db, User, Company, InternshipProgram, Internship, DailyLog
+from models import db, User, Company, InternshipProgram, Internship, DailyLog, University
 from werkzeug.security import generate_password_hash, check_password_hash
-from db_seed import init_database, normalize_role, is_danisman
+from db_seed import init_database, normalize_role, is_danisman, default_university_name
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 instance_path = os.path.join(basedir, 'instance')
@@ -20,6 +20,25 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
+
+
+@app.context_processor
+def inject_globals():
+    uni = University.query.first()
+    return {
+        'institution_name': uni.name if uni else default_university_name(),
+        'user_role': normalize_role(current_user.role) if current_user.is_authenticated else None,
+    }
+
+
+@app.template_filter('status_badge')
+def status_badge(status):
+    if not status:
+        return 'beklemede'
+    key = status.strip().lower().replace(' ', '-')
+    if key == 'onaylandi':
+        return 'onaylandı'
+    return key
 
 
 def role_required(*roles):
@@ -216,11 +235,16 @@ def add_log():
         flash('Günlük eklemek için onaylanmış bir stajınız olmalı.', 'error')
         return redirect(url_for('dashboard'))
 
+    hours = request.form.get('hours', type=int)
+    if not hours or not (1 <= hours <= 12):
+        flash('Çalışılan saat 1–12 arasında olmalı.', 'error')
+        return redirect(url_for('dashboard'))
+
     db.session.add(DailyLog(
         student_id=current_user.id,
         student_name=current_user.name,
         content=content,
-        hours=request.form.get('hours', type=int),
+        hours=hours,
         status='Beklemede',
     ))
     db.session.commit()
@@ -279,11 +303,15 @@ def admin_add_user():
         flash('Bu e-posta zaten kayıtlı.', 'error')
         return redirect(url_for('dashboard'))
 
+    uni = University.query.filter_by(is_active=True).first()
     db.session.add(User(
         email=email,
         password=generate_password_hash(password),
         name=name,
         role=role,
+        student_no=request.form.get('student_no', '').strip() or None,
+        department=request.form.get('department', '').strip() or None,
+        university_id=uni.id if uni else None,
     ))
     db.session.commit()
     flash(f'{name} eklendi.', 'success')

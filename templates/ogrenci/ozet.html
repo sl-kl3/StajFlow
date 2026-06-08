@@ -1,29 +1,31 @@
 {% extends "base.html" %}
 {% block content %}
-<header class="topbar">
+<header class="topbar topbar-sticky" id="ogrenci-baslik">
     <div>
         <h1 class="topbar-title">Öğrenci <span>Paneli</span></h1>
-        <p class="topbar-date">Şirket staj ilanları</p>
+        <p class="topbar-date">{{ institution_name }} · Staj başvurusu ve günlük takibi</p>
     </div>
 </header>
 
-
-<section class="card profil-card">
+<section class="card profil-card panel-section" id="ogrenci-profil">
     <div class="profil-row">
         <div class="profil-avatar">{{ current_user.name[0]|upper }}</div>
         <div>
             <strong class="profil-name">{{ current_user.name }}</strong>
             {% if current_user.student_no %}
-            <span class="profil-sub">{{ current_user.student_no }}</span>
+            <span class="profil-sub"><i class="ti ti-id"></i> {{ current_user.student_no }}</span>
             {% endif %}
             {% if current_user.department %}
-            <span class="profil-sub">{{ current_user.department }}</span>
+            <span class="profil-sub"><i class="ti ti-school"></i> {{ current_user.department }}</span>
+            {% endif %}
+            {% if current_user.university %}
+            <span class="profil-sub"><i class="ti ti-building-community"></i> {{ current_user.university.name }}</span>
             {% endif %}
         </div>
     </div>
 </section>
 
-<section class="card full-width" id="ilanlar">
+<section class="card full-width panel-section" id="ilanlar">
     <h2><i class="ti ti-building"></i> Şirket Staj İlanları</h2>
     {% if can_apply %}
     <p class="hint">Başvurmak istediğin ilanın altındaki butona bas.</p>
@@ -63,7 +65,7 @@
 </section>
 
 {% if apply %}
-<section class="card">
+<section class="card panel-section" id="basvurum">
     <h2><i class="ti ti-file-text"></i> Başvurum</h2>
     <div class="status-box">
         <p><span class="label">Şirket</span> <strong>{{ apply.company_name }}</strong></p>
@@ -73,8 +75,13 @@
         <p><span class="label">Tür</span> {{ apply.internship_type }}</p>
         <p><span class="label">Tarih</span> {{ apply.start_date }}{% if apply.end_date %} – {{ apply.end_date }}{% endif %}</p>
         <p><span class="label">Durum</span>
-            <span class="badge badge-{{ apply.status|lower|replace(' ', '-')|replace('ı','i') }}">{{ apply.status }}</span>
+            <span class="badge badge-{{ apply.status|status_badge }}">{{ apply.status }}</span>
         </p>
+        {% if apply.score is not none %}
+        <p><span class="label">Staj Puanı</span> <strong>{{ apply.score }}/100</strong>
+            {% if apply.advisor_note %} — {{ apply.advisor_note }}{% endif %}
+        </p>
+        {% endif %}
     </div>
     {% if apply.status == 'Onaylandı' %}
     <p class="hint success-hint">Onaylandı — günlük ekleyebilirsin.</p>
@@ -86,22 +93,22 @@
 </section>
 {% endif %}
 
-<div class="dashboard-grid">
+<div class="dashboard-grid panel-section" id="gunluk">
     <section class="card">
-        <h2><i class="ti ti-notebook"></i> Günlük</h2>
+        <h2><i class="ti ti-notebook"></i> Günlük Ekle</h2>
         {% if apply and apply.status == 'Onaylandı' %}
         <form action="{{ url_for('add_log') }}" method="POST" class="stack-form">
-            <input type="number" name="hours" min="1" max="12" placeholder="Kac saat calistiniz?" style="margin-bottom:8px">
-            <textarea name="content" rows="5" placeholder="Bugün ne yaptın?" required></textarea>
+            <input type="number" name="hours" min="1" max="12" placeholder="Kaç saat çalıştınız?" required>
+            <textarea name="content" rows="5" placeholder="Bugün ne yaptınız?" required></textarea>
             <button type="submit" class="btn-main">Gönder</button>
         </form>
         {% else %}
-        <p class="hint">Günlük için staj başvurunun onaylanması lazım.</p>
+        <p class="hint">Günlük için staj başvurunun onaylanması gerekir.</p>
         {% endif %}
     </section>
 </div>
 
-<section class="card full-width">
+<section class="card full-width panel-section" id="gunluklerim">
     <h2>Günlüklerim</h2>
     {% if logs %}
     <div class="table-wrap">
@@ -115,7 +122,7 @@
                     <td>{{ log.date.strftime('%d.%m.%Y %H:%M') }}</td>
                     <td>{{ log.hours or '-' }} saat</td>
                     <td>{{ log.content }}</td>
-                    <td><span class="badge badge-{{ log.status|lower|replace('ı','i') }}">{{ log.status }}</span></td>
+                    <td><span class="badge badge-{{ log.status|status_badge }}">{{ log.status }}</span></td>
                 </tr>
                 {% endfor %}
             </tbody>

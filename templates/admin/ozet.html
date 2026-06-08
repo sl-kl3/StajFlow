@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
-<header class="topbar">
+<header class="topbar topbar-sticky">
     <div>
         <h1 class="topbar-title">Sistem <span>Yöneticisi</span></h1>
-        <p class="topbar-date">Şirket kaydı ve staj ilanı yayınlama</p>
+        <p class="topbar-date">{{ institution_name }} · Şirket kaydı ve staj ilanı yönetimi</p>
     </div>
 </header>
 
@@ -37,23 +37,25 @@
 
 <div class="dashboard-grid">
 
-    <section class="card">
-        <h2><i class="ti ti-user-plus"></i> Kullanici Ekle</h2>
-        <p class="hint">Sisteme yeni ogrenci, danishman veya yonetici ekle.</p>
+    <section class="card panel-section" id="kullanici-ekle">
+        <h2><i class="ti ti-user-plus"></i> Kullanıcı Ekle</h2>
+        <p class="hint">Sisteme yeni öğrenci, danışman veya yönetici ekleyin.</p>
         <form action="{{ url_for('admin_add_user') }}" method="POST" class="stack-form">
             <input type="text" name="name" placeholder="Ad Soyad *" required>
-            <input type="email" name="email" placeholder="E-posta *" required>
-            <input type="password" name="password" placeholder="Sifre *" required>
+            <input type="email" name="email" placeholder="Kurumsal e-posta *" required>
+            <input type="password" name="password" placeholder="Şifre *" required>
             <select name="role">
-                <option value="ogrenci">Ogrenci</option>
-                <option value="danisman">Danishman</option>
-                <option value="admin">Yonetici</option>
+                <option value="ogrenci">Öğrenci</option>
+                <option value="danisman">Danışman</option>
+                <option value="admin">Yönetici</option>
             </select>
-            <button type="submit" class="btn-main">Kullanici Ekle</button>
+            <input type="text" name="student_no" placeholder="Öğrenci no (öğrenci için)">
+            <input type="text" name="department" placeholder="Bölüm / fakülte">
+            <button type="submit" class="btn-main">Kullanıcı Ekle</button>
         </form>
     </section>
 
-    <section class="card">
+    <section class="card panel-section" id="sirket-ilan">
         <h2><i class="ti ti-building"></i> Şirket Kaydı</h2>
         <p class="hint">Staj yapılacak firmayı sisteme ekle (ad, sektör, iletişim).</p>
         <form action="{{ url_for('admin_add_company') }}" method="POST" class="stack-form">

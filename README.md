@@ -1,48 +1,49 @@
 # StajFlow
 
-BM staj takip projesi. Flask + SQLite kullandik.
+Türkiye'deki üniversiteler için staj başvuru, onay ve günlük takip sistemi. Flask + SQLite.
 
-## Ne yapiyor bu site?
+## Ne yapıyor?
 
-- Admin -> sirket kaydi, staj ilani acma
-- Ogrenci -> ilana basvuru, staj gunlugu yazma
-- Danisman -> basvuru ve gunluk onaylama / reddetme
+- **Yönetici** → şirket kaydı, staj ilanı, kullanıcı yönetimi
+- **Öğrenci** → ilana başvuru, günlük ve çalışılan saat girişi
+- **Danışman** → başvuru/günlük onayı, staj puanlama
 
-## Calistirmak icin
+## Kurulum
 
-Projeyi cektikten sonra sirayla:
+```bash
+pip install -r requirements.txt
+python setup_db.py
+python app.py
+```
 
-    pip install -r requirements.txt
-    python setup_db.py
-    python app.py
+Tarayıcı: http://127.0.0.1:5000
 
-Sonra tarayicidan: http://127.0.0.1:5000
+## Demo hesaplar
 
-(Ekip arkadasiysan once git pull at.)
+| Rol | E-posta | Şifre |
+|-----|---------|-------|
+| Yönetici | admin@staj.edu.tr | admin123 |
+| Danışman | danisman@staj.edu.tr | danisman123 |
+| Öğrenci | ogr@staj.edu.tr | ogr123 |
 
-## Giris bilgileri (test)
+## Üniversite adını özelleştirme
 
-- Admin -> admin@staj.edu.tr / admin123
-- Danisman -> danisman@staj.edu.tr / danisman123
-- Ogrenci -> ogr@staj.edu.tr / ogr123
+Windows PowerShell:
 
-## Dosyalar ne?
+```powershell
+$env:UNIVERSITY_NAME="İstanbul Teknik Üniversitesi"
+python app.py
+```
 
-- app.py -> asil kod, sayfalar ve islemler burda
-- models.py -> veritabani tablolari
-- db_seed.py -> demo kullanici ve ornek sirketler
-- setup_db.py -> db'yi sifirlayip bastan kurar
-- requirements.txt -> lazim olan kutuphaneler
-- templates/ -> html sayfalari
-- static/css/style.css -> gorunum
+## Dosyalar
 
-## instance ve __pycache__ niye cikiyor?
+- `app.py` — route'lar ve iş mantığı
+- `models.py` — veritabanı tabloları
+- `db_seed.py` — demo veriler ve hesap onarımı
+- `setup_db.py` — veritabanını sıfırlar
+- `templates/` — HTML sayfaları
+- `static/css/style.css` — arayüz
 
-Programi calistirinca kendiliginden olusuyorlar, normal.
+## Not
 
-- instance/ -> veritabani dosyasi (stajflow.db) burda duruyor
-- __pycache__/ -> python'un cache klasoru
-
-Ikisini de silebilirsin ama python app.py deyince yine gelir. GitHub'a zaten gitmiyor (.gitignore'da var).
-
-Veritabanini sifirlamak istersen: python setup_db.py
+`instance/stajflow.db` uygulama çalışınca oluşur. Sıfırlamak için: `python setup_db.py`
