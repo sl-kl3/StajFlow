@@ -265,12 +265,6 @@ textarea { min-height: 110px; resize: vertical; }
     text-decoration: none;
     font-size: 14px;
     font-weight: 500;
-    transition: background 0.15s ease, color 0.15s ease;
-}
-
-.nav-item:hover:not(.logout) {
-    background: rgba(255,255,255,0.1);
-    color: #fff;
 }
 
 .nav-item.active {
@@ -280,11 +274,10 @@ textarea { min-height: 110px; resize: vertical; }
 
 .nav-item.logout { color: #fca5a5; margin-top: 12px; }
 
-.section-subtitle {
-    margin: 20px 0 12px;
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--text2);
+.nav-hint {
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+    cursor: default;
 }
 
 .user-profile {
@@ -314,61 +307,6 @@ textarea { min-height: 110px; resize: vertical; }
     flex: 1;
     padding: 32px 36px 48px;
     min-width: 0;
-}
-
-.panel-page {
-    animation: panelFadeIn 0.35s ease both;
-}
-
-@keyframes panelFadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(14px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.quick-links {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-    gap: 16px;
-    margin-top: 8px;
-}
-
-.quick-link-card {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    padding: 20px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    text-decoration: none;
-    color: var(--text);
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-}
-
-.quick-link-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 28px rgba(91, 33, 182, 0.1);
-    border-color: #c4b5fd;
-}
-
-.quick-link-card i {
-    font-size: 26px;
-    color: var(--p500);
-}
-
-.quick-link-card strong {
-    font-size: 15px;
-}
-
-.quick-link-card span {
-    font-size: 13px;
-    color: var(--text3);
 }
 
 .topbar { margin-bottom: 24px; }
@@ -588,8 +526,57 @@ th { color: var(--text3); font-size: 12px; font-weight: 600; }
     border-color: #6ee7b7;
 }
 
+.advisor-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.advisor-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--text2);
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.advisor-tab:hover,
+.advisor-tab.active {
+    background: var(--p500);
+    color: #fff;
+    border-color: var(--p500);
+}
+
+.tab-badge {
+    background: rgba(255,255,255,0.25);
+    color: inherit;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+.advisor-tab:not(.active) .tab-badge {
+    background: #fef3c7;
+    color: #b45309;
+}
+
 .approval-section {
+    scroll-margin-top: 20px;
     margin-bottom: 24px;
+}
+
+.section-hint {
+    font-size: 13px;
+    color: var(--text3);
+    font-weight: 400;
 }
 
 .approval-list {
@@ -760,4 +747,50 @@ th { color: var(--text3); font-size: 12px; font-weight: 600; }
     }
     .main-content { margin-left: 0; padding: 20px; }
     .app { flex-direction: column; }
+}
+
+/* Eksik badge siniflari */
+.badge-onay-bekliyor { background: #fef3c7; color: #b45309; }
+.badge-onaylandi { background: #d1fae5; color: #047857; }
+.badge-onaylandı { background: #d1fae5; color: #047857; }
+.badge-reddedildi { background: #fee2e2; color: #b91c1c; }
+
+/* Profil kutusu */
+.profil-card {
+    display: flex;
+    align-items: center;
+    padding: 16px 24px;
+    margin-bottom: 20px;
+    border-left: 4px solid var(--p500);
+}
+.profil-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+.profil-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--p500), var(--a500));
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Outfit', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+}
+.profil-name {
+    display: block;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+}
+.profil-sub {
+    display: inline-block;
+    font-size: 12px;
+    color: var(--text3);
+    margin-right: 10px;
 }

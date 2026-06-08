@@ -31,7 +31,7 @@ class Company(db.Model):
 
 
 class InternshipProgram(db.Model):
-    """Sirketin actigi staj ilani."""
+    """Sirketin actigi staj ilani — ogrenci buradan secer."""
     id = db.Column(db.Integer, primary_key=True)
     company_id = db.Column(db.Integer, db.ForeignKey('company.id'), nullable=False)
     title = db.Column(db.String(150), nullable=False)
@@ -41,6 +41,7 @@ class InternshipProgram(db.Model):
     end_date = db.Column(db.String(50), nullable=True)
     quota = db.Column(db.Integer, default=5)
     is_active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     applications = db.relationship('Internship', backref='program', lazy=True)
 
@@ -55,6 +56,8 @@ class Internship(db.Model):
     end_date = db.Column(db.String(50), nullable=True)
     description = db.Column(db.Text, nullable=True)
     status = db.Column(db.String(20), default='Onay Bekliyor')
+    score = db.Column(db.Integer, nullable=True)
+    advisor_note = db.Column(db.Text, nullable=True)
 
 
 class DailyLog(db.Model):
@@ -63,4 +66,5 @@ class DailyLog(db.Model):
     student_name = db.Column(db.String(100))
     date = db.Column(db.DateTime, default=datetime.utcnow)
     content = db.Column(db.Text, nullable=False)
+    hours = db.Column(db.Integer, nullable=True)
     status = db.Column(db.String(20), default='Beklemede')

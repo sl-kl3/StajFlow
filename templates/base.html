@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StajFlow | {{ page_title|default('Panel') }}</title>
+    <title>StajFlow | Panel</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
@@ -16,19 +16,34 @@
                 <div class="sidebar-logo-text">Staj<span>Flow</span></div>
             </div>
             <nav class="sidebar-nav">
-                {% for key, label, icon in panel_menus %}
-                <a href="{{ url_for('panel', section=key) }}"
-                   class="nav-item{% if section == key %} active{% endif %}">
-                    <i class="ti {{ icon }}"></i> {{ label }}
+                <a href="{{ url_for('dashboard') }}" class="nav-item active">
+                    <i class="ti ti-layout-dashboard"></i> Genel Bakış
                 </a>
-                {% endfor %}
+                {% if current_user.role == 'ogrenci' or current_user.role == 'student' %}
+                <a href="{{ url_for('dashboard') }}#ilanlar" class="nav-item">
+                    <i class="ti ti-building"></i> Staj İlanları
+                </a>
+                {% elif current_user.role == 'danisman' or current_user.role == 'danishman' %}
+                <a href="{{ url_for('dashboard') }}#onay-basvuru" class="nav-item">
+                    <i class="ti ti-briefcase"></i> Başvuru Onayı
+                </a>
+                <a href="{{ url_for('dashboard') }}#onay-gunluk" class="nav-item">
+                    <i class="ti ti-notebook"></i> Günlük Onayı
+                </a>
+                {% elif current_user.role == 'admin' %}
+                <span class="nav-item nav-hint"><i class="ti ti-building"></i> Şirket & ilan</span>
+                {% endif %}
                 <a href="{{ url_for('logout') }}" class="nav-item logout">
                     <i class="ti ti-logout"></i> Çıkış
                 </a>
             </nav>
             <div class="user-profile">
                 <p class="profile-name">{{ current_user.name }}</p>
-                <span class="role-badge role-{{ user_role or current_user.role }}">{{ role_label }}</span>
+                <span class="role-badge role-{{ current_user.role }}">
+                    {% if current_user.role == 'admin' %}Yönetici
+                    {% elif current_user.role == 'danisman' %}Danışman
+                    {% else %}Öğrenci{% endif %}
+                </span>
             </div>
         </aside>
 
