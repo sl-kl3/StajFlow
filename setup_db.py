@@ -1,4 +1,4 @@
-"""Veritabanini sifirlar ve demo verileri yukler."""
+# veritabanini sifirlar, sunumdan once bir kez calistir
 from app import app
 from models import db
 from db_seed import ensure_demo_users, seed_sirketler, seed_university
@@ -9,7 +9,7 @@ with app.app_context():
     seed_university()
     ensure_demo_users()
     seed_sirketler()
-    print('Veritabani hazir.')
-    print('Yonetici: admin@staj.edu.tr / admin123')
-    print('Danisman: danisman@staj.edu.tr / danisman123')
-    print('Ogrenci: ogr@staj.edu.tr / ogr123')
+    print('tamam, db hazir')
+    print('admin@staj.edu.tr / admin123')
+    print('danisman@staj.edu.tr / danisman123')
+    print('ogr@staj.edu.tr / ogr123')

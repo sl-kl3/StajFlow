@@ -1,49 +1,47 @@
 # StajFlow
 
-Türkiye'deki üniversiteler için staj başvuru, onay ve günlük takip sistemi. Flask + SQLite.
+BM staj projesi. Flask ile yaptik.
 
-## Ne yapıyor?
+## Ne var icinde?
 
-- **Yönetici** → şirket kaydı, staj ilanı, kullanıcı yönetimi
-- **Öğrenci** → ilana başvuru, günlük ve çalışılan saat girişi
-- **Danışman** → başvuru/günlük onayı, staj puanlama
+Admin sirket/ilan ekliyor, ogrenci basvurup gunluk yaziyor, danisman onayliyor ve puan veriyor.
+Ogrenci profil doldurup cv falan da yukleyebiliyor.
 
-## Kurulum
+## Nasil calistirilir
 
-```bash
+```
+git pull
 pip install -r requirements.txt
 python setup_db.py
 python app.py
 ```
 
-Tarayıcı: http://127.0.0.1:5000
+http://127.0.0.1:5000
 
-## Demo hesaplar
+## Giris (demo)
 
-| Rol | E-posta | Şifre |
-|-----|---------|-------|
-| Yönetici | admin@staj.edu.tr | admin123 |
-| Danışman | danisman@staj.edu.tr | danisman123 |
-| Öğrenci | ogr@staj.edu.tr | ogr123 |
-
-## Üniversite adını özelleştirme
-
-Windows PowerShell:
-
-```powershell
-$env:UNIVERSITY_NAME="İstanbul Teknik Üniversitesi"
-python app.py
-```
+- admin@staj.edu.tr / admin123
+- danisman@staj.edu.tr / danisman123
+- ogr@staj.edu.tr / ogr123
 
 ## Dosyalar
 
-- `app.py` — route'lar ve iş mantığı
-- `models.py` — veritabanı tabloları
-- `db_seed.py` — demo veriler ve hesap onarımı
-- `setup_db.py` — veritabanını sıfırlar
-- `templates/` — HTML sayfaları
-- `static/css/style.css` — arayüz
+- app.py - route lar burda
+- models.py - db tablolari
+- db_seed.py - ornek veri
+- setup_db.py - db sifirla (sunumdan once calistir)
+- templates/ - html ler
+- static/css/style.css - css
 
-## Not
+## instance klasoru
 
-`instance/stajflow.db` uygulama çalışınca oluşur. Sıfırlamak için: `python setup_db.py`
+Programi acinca olusuyor, icinde veritabani ve yuklenen dosyalar var. Git e gitmez normal.
+Sorun olursa setup_db.py tekrar calistir.
+
+## Uni adi degistirmek icin (istege bagli)
+
+PowerShell:
+```
+$env:UNIVERSITY_NAME="Bizim Universite"
+python app.py
+```

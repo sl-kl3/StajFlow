@@ -19,7 +19,7 @@ ROLE_MAP = {
 }
 
 DEMO_USERS = [
-    ('admin@staj.edu.tr', 'admin123', 'Sistem Yöneticisi', 'admin', None, None),
+    ('admin@staj.edu.tr', 'admin123', 'Admin', 'admin', None, None),
     ('danisman@staj.edu.tr', 'danisman123', 'Dr. Ahmet Yılmaz', 'danisman', None, 'Bilgisayar Mühendisliği'),
     ('ogr@staj.edu.tr', 'ogr123', 'Ayşe Demir', 'ogrenci', '2021001001', 'Bilgisayar Mühendisliği'),
 ]
@@ -58,14 +58,11 @@ def seed_university():
 
 
 def ensure_demo_users():
-    """Demo hesaplari her zaman dogru sifre ve rol ile tutar."""
     uni = seed_university()
 
     for email, sifre, isim, rol, no, bolum in DEMO_USERS:
         user = User.query.filter_by(email=email).first()
-        hashed = generate_password_hash(sifre)
         if user:
-            user.password = hashed
             user.name = isim
             user.role = rol
             user.university_id = uni.id
@@ -76,13 +73,19 @@ def ensure_demo_users():
         else:
             db.session.add(User(
                 email=email,
-                password=hashed,
+                password=generate_password_hash(sifre),
                 name=isim,
                 role=rol,
                 student_no=no,
                 department=bolum,
                 university_id=uni.id,
             ))
+
+    # sifre unutulursa diye sadece demo maillerde sifreyi sabit tutuyoruz
+    for email, sifre, *_ in DEMO_USERS:
+        user = User.query.filter_by(email=email).first()
+        if user:
+            user.password = generate_password_hash(sifre)
     ogr = User.query.filter_by(email='ogr@staj.edu.tr').first()
     if ogr:
         ogr.gpa = 3.42
@@ -175,6 +178,10 @@ def _ensure_columns():
         cols = {c['name'] for c in inspector.get_columns('daily_log')}
         if 'hours' not in cols:
             db.session.execute(text('ALTER TABLE daily_log ADD COLUMN hours INTEGER'))
+    if 'internship_program' in inspector.get_table_names():
+        cols = {c['name'] for c in inspector.get_columns('internship_program')}
+        if 'created_at' not in cols:
+            db.session.execute(text('ALTER TABLE internship_program ADD COLUMN created_at DATETIME'))
     db.session.commit()
 
 
