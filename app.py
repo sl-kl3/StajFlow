@@ -220,7 +220,6 @@ def add_log():
         student_id=current_user.id,
         student_name=current_user.name,
         content=content,
-        hours=request.form.get('hours', type=int),
         status='Beklemede',
     ))
     db.session.commit()
@@ -367,20 +366,4 @@ with app.app_context():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
-
-@app.route('/action/score/<int:apply_id>', methods=['POST'])
-@login_required
-@role_required('danisman')
-def action_score(apply_id):
-    record = Internship.query.get_or_404(apply_id)
-    score = request.form.get('score', type=int)
-    note = request.form.get('advisor_note', '').strip()
-    if score is None or not (0 <= score <= 100):
-        flash('Gecerli bir puan girin (0-100).', 'error')
-        return redirect(url_for('dashboard'))
-    record.score = score
-    record.advisor_note = note or None
-    db.session.commit()
-    flash(f'{record.student.name} icin puan kaydedildi: {score}/100', 'success')
-    return redirect(url_for('dashboard'))
+    app.run(debug=True)s
