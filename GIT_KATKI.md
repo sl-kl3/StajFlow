@@ -1,172 +1,168 @@
 # GitHub'da Gorunmek Icin — Nazli, Zuhal, Ilknur
 
-Salih ve Mine commit atmis. Siz de **kendi GitHub hesabinizdan** 1 commit atinca hocaya ve arkadaslara gorunursunuz.
+Gereksiz ek dosya yok. **Kendi modul dosyaniza** kucuk bir duzenleme yapip push edeceksiniz.  
+Proje bozulmaz — sadece yorum satiri veya kucuk metin duzeltmesi.
 
-> Onemli: Salih sizin yerinize commit atamaz — GitHub'da **sizin isminiz** cikmaz.  
-> Herkes **kendi bilgisayarindan** yapacak (5 dk surer).
-
----
-
-## Onceden hazir dosyalar
-
-| Kisi | Dosya | Ne yapacaksin |
-|------|-------|---------------|
-| **Nazli** | `docs/veritabani-notlari.md` | En alta adini ve tarihi yaz |
-| **Zuhal** | `docs/admin-panel-notlari.md` | En alta adini ve tarihi yaz |
-| **Ilknur** | `docs/arayuz-notlari.md` | En alta adini ve tarihi yaz |
-
-Dosyalarin icerigi hazir. Sadece en alttaki `(buraya adini yaz)` kismini duzenleyip push edeceksin.
+Salih sizin yerinize commit atamaz. **Kendi bilgisayarinizdan, kendi GitHub hesabinizla** yapin (5 dk).
 
 ---
 
-## Adim adim (Windows — PowerShell)
+## Kim hangi dosyaya dokunacak?
 
-### 0) GitHub hesabin
+| Kisi | Gercek dosya | Ne yapacak |
+|------|--------------|------------|
+| **Nazli** | `models.py` | En uste aciklama yorumu ekle |
+| **Zuhal** | `templates/admin/ogrenciler.html` | Rol secenegini duzelt |
+| **Ilknur** | `templates/login.html` | Yazim hatasi duzelt |
 
-- GitHub'a uye ol
-- Salih seni repo'ya collaborator olarak eklemis olmali
-- GitHub -> Settings -> Emails -> e-posta adresini not al (commit'te bu lazim)
+Hepsi zaten projede var. **Yeni dosya olusturmayin.**
 
-### 1) Projeyi indir (ilk kez)
+---
 
-```powershell
-cd Desktop
-git clone https://github.com/sl-kl3/StajFlow.git
-cd StajFlow
-```
+## Oncelik: GitHub collaborator
 
-Zaten indirdiysen:
+Salih sizi repo'ya eklemeli. E-postadaki daveti kabul edin.
+
+---
+
+## Ortak adimlar (herkes)
 
 ```powershell
 cd Desktop\StajFlow
 git pull
+
+git config user.name "Adin Soyadin"
+git config user.email "github-epostan@..."
 ```
 
-### 2) Git'e kendi ismini yaz (sadece 1 kez)
+> E-posta GitHub hesabinizdaki ile ayni olmali.
 
-```powershell
-git config user.name "Nazli Yilmaz"
-git config user.email "senin-github-email@example.com"
-```
-
-> `user.email` GitHub hesabindaki e-posta olmali — yoksa commit profilinde gorunmez.
-
-Zuhal ve Ilknur kendi isimlerini yazar.
-
-### 3) Dosyani duzenle
-
-**Nazli:**
-
-`docs/veritabani-notlari.md` dosyasini ac. En alt satirlari soyle yap:
-
-```
-*Hazirlayan: Nazli Yilmaz*
-*Tarih: 2 Haziran 2026*
-```
-
-**Zuhal:**
-
-`docs/admin-panel-notlari.md` — en alta kendi adin + tarih
-
-**Ilknur:**
-
-`docs/arayuz-notlari.md` — en alta kendi adin + tarih
-
-### 4) Commit + push
-
-```powershell
-git add docs/veritabani-notlari.md
-git commit -m "veritabani notlari eklendi"
-git push origin main
-```
-
-Zuhal:
-
-```powershell
-git add docs/admin-panel-notlari.md
-git commit -m "admin panel notlari eklendi"
-git push origin main
-```
-
-Ilknur:
-
-```powershell
-git add docs/arayuz-notlari.md
-git commit -m "arayuz notlari eklendi"
-git push origin main
-```
-
-### 5) Kontrol
-
-GitHub'da repo ac -> **Commits** -> kendi ismin gorunmeli.
+**Sirayla push edin:** Nazli -> Zuhal -> Ilknur. Herkes push etmeden once `git pull` yapsin.
 
 ---
 
-## Sira onemli
+## NAZLI — `models.py`
 
-1. Once **Nazli** pull + push
-2. Sonra **Zuhal** pull + push
-3. Sonra **Ilknur** pull + push
+Dosyayi ac. **En ust satira** (1. satir, `from datetime` oncesine) su 2 satiri ekle:
 
-Ikisi ayni anda push ederse conflict olabilir. Biri bitirince digeri `git pull` yapsin.
+```python
+# StajFlow veritabani modelleri (7 tablo)
+# User, University, Company, InternshipProgram, Internship, DailyLog, StudentDocument
+```
 
----
-
-## Ekstra (istege bagli — daha inandirici)
-
-Commit attiktan sonra kendi modul dosyana **1 satir yorum** ekleyebilirsin:
-
-| Kisi | Dosya | Eklenecek satir (dosyanin en ustune) |
-|------|-------|--------------------------------------|
-| Nazli | `models.py` | `# Veritabani modelleri - Nazli` |
-| Zuhal | `templates/admin/anasayfa.html` | `{# Admin dashboard - Zuhal #}` |
-| Ilknur | `static/css/style.css` | `/* StajFlow arayuz - Ilknur */` |
-
-Ayri commit:
+Sonra:
 
 ```powershell
 git add models.py
 git commit -m "models dosyasina aciklama eklendi"
-git push
+git push origin main
 ```
+
+**Hocaya:** "Veritabani tablolarini models.py'de tanimladik. Ben tablo yapisini ve aciklamasini ekledim."
+
+---
+
+## ZUHAL — `templates/admin/ogrenciler.html`
+
+Dosyayi ac. Rol seciminde su satiri bul (satir 13 civari):
+
+```html
+<option value="admin">Yönetici</option>
+```
+
+Su sekilde degistir:
+
+```html
+<option value="admin">Admin</option>
+```
+
+(Geri kalan projede de "Admin" yaziyor, tutarlilik icin.)
+
+Sonra:
+
+```powershell
+git add templates/admin/ogrenciler.html
+git commit -m "admin kullanici ekleme ekrani duzeltildi"
+git push origin main
+```
+
+**Hocaya:** "Admin panelindeki kullanici ekleme formunu ben duzenledim. Rol secenekleri ve formlar admin/ogrenciler.html dosyasinda."
+
+---
+
+## ILKNUR — `templates/login.html`
+
+Dosyayi ac. Su satiri bul (satir 16 civari):
+
+```html
+<p>Ogrenci basvurusu, danisman onayi, gunluk ve puanlama.</p>
+```
+
+Su sekilde degistir (Turkce karakter):
+
+```html
+<p>Öğrenci başvurusu, danışman onayı, günlük ve puanlama.</p>
+```
+
+Sonra:
+
+```powershell
+git add templates/login.html
+git commit -m "login sayfasi metin duzeltmesi"
+git push origin main
+```
+
+**Hocaya:** "Giris ekraninin arayuzunu ve metinlerini ben duzenledim. login.html ve CSS benim kisim."
+
+---
+
+## Isteg bagli 2. commit (daha guclu kanit)
+
+Ilk commit yetmezse bir satir daha:
+
+| Kisi | Dosya | Ekle |
+|------|-------|------|
+| Nazli | `db_seed.py` | En uste: `# Demo veri ve seed - Nazli` |
+| Zuhal | `templates/admin/sirketler.html` | `{# Sirket ve ilan yonetimi #}` en uste |
+| Ilknur | `static/css/style.css` | En uste: `/* StajFlow arayuz stilleri */` |
+
+Ayri commit atin.
+
+---
+
+## Proje bozulur mu?
+
+| Soru | Cevap |
+|------|-------|
+| Uygulama calisir mi? | Evet |
+| Yeni dosya eklenir mi? | Hayir |
+| Ne degisir? | 1-2 satir yorum veya metin |
+| Flask etkilenir mi? | Hayir, yorum satirlari kodu bozmaz |
+
+Push sonrasi test (istege bagli):
+
+```powershell
+python app.py
+```
+
+Tarayicida login ac, admin ogrenci ekle ekranina bak.
 
 ---
 
 ## Hata cozumleri
 
-**"Permission denied" / push olmuyor**
+**Push reddedildi** -> Salih collaborator eklemeli, davet kabul.
 
-- Salih seni GitHub repo'ya collaborator olarak eklemeli
-- GitHub'da daveti kabul et (e-posta gelir)
+**Conflict** -> `git pull origin main` sonra tekrar dene.
 
-**"Conflict" / birlestirme hatasi**
-
-```powershell
-git pull origin main
-```
-
-Sonra tekrar duzenle, commit, push.
-
-**Commit'te ismim yok**
-
-```powershell
-git config user.email
-```
-
-GitHub'daki e-posta ile ayni mi kontrol et.
-
----
-
-## Hocaya ne dersiniz?
-
-> "Ben kendi modulum icin dokuman yazdim ve GitHub'a push ettim. Veritabani / admin / arayuz notlari `docs/` klasorunde."
-
-Bu gercek bir istir — yalan degil.
+**Ismim commit'te yok** -> `git config user.email` GitHub e-postasi mi kontrol et.
 
 ---
 
 ## Salih'e not
 
-1. Nazli, Zuhal, Ilknur'u GitHub repo'ya **Collaborator** olarak ekle
-2. Bu dosyayi (`GIT_KATKI.md`) gruba at
-3. Sirayla push etmelerini iste
+1. Collaborator ekle (Nazli, Zuhal, Ilknur)
+2. Bu dosyayi gruba at
+3. Sirayla push etmelerini soyle
+
+Eski `docs/` klasoru kaldirildi — gercek proje dosyalari uzerinden katki daha mantikli.
