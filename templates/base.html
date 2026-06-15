@@ -3,51 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StajFlow | Panel</title>
+    <title>StajFlow | {{ page_title|default('Panel') }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 </head>
 <body>
     <div class="app">
         <aside class="sidebar">
-            <div class="sidebar-logo">
+            <div class="sidebar-brand">
                 <div class="sidebar-logo-icon"><i class="ti ti-briefcase"></i></div>
-                <div class="sidebar-logo-text">Staj<span>Flow</span></div>
+                <div>
+                    <div class="sidebar-logo-text">Staj<span>Flow</span></div>
+                    <div class="sidebar-sub">Staj Takip Sistemi</div>
+                </div>
             </div>
+
             <nav class="sidebar-nav">
-                <a href="{{ url_for('dashboard') }}" class="nav-item active">
-                    <i class="ti ti-layout-dashboard"></i> Genel Bakış
+                {% if user_role == 'ogrenci' %}
+                <a href="{{ url_for('ogrenci_home') }}" class="nav-item {% if active_page == 'anasayfa' %}active{% endif %}">
+                    <i class="ti ti-home"></i> Ana Sayfa
                 </a>
-                {% if current_user.role == 'ogrenci' or current_user.role == 'student' %}
-                <a href="{{ url_for('dashboard') }}#ilanlar" class="nav-item">
+                <a href="{{ url_for('ogrenci_basvurularim') }}" class="nav-item {% if active_page == 'basvurularim' %}active{% endif %}">
+                    <i class="ti ti-file-text"></i> Başvurularım
+                </a>
+                <a href="{{ url_for('ogrenci_ilanlar') }}" class="nav-item {% if active_page == 'ilanlar' %}active{% endif %}">
                     <i class="ti ti-building"></i> Staj İlanları
                 </a>
-                {% elif current_user.role == 'danisman' or current_user.role == 'danishman' %}
-                <a href="{{ url_for('dashboard') }}#onay-basvuru" class="nav-item">
+                <a href="{{ url_for('ogrenci_gunluk') }}" class="nav-item {% if active_page == 'gunluk' %}active{% endif %}">
+                    <i class="ti ti-notebook"></i> Staj Günlüğüm
+                </a>
+                <a href="{{ url_for('ogrenci_degerlendirme') }}" class="nav-item {% if active_page == 'degerlendirme' %}active{% endif %}">
+                    <i class="ti ti-star"></i> Değerlendirme
+                </a>
+                {% elif user_role == 'danisman' %}
+                <a href="{{ url_for('danisman_home') }}" class="nav-item {% if active_page == 'anasayfa' %}active{% endif %}">
+                    <i class="ti ti-home"></i> Ana Sayfa
+                </a>
+                <a href="{{ url_for('danisman_basvurular') }}" class="nav-item {% if active_page == 'basvurular' %}active{% endif %}">
                     <i class="ti ti-briefcase"></i> Başvuru Onayı
                 </a>
-                <a href="{{ url_for('dashboard') }}#onay-gunluk" class="nav-item">
+                <a href="{{ url_for('danisman_gunluk') }}" class="nav-item {% if active_page == 'gunluk' %}active{% endif %}">
                     <i class="ti ti-notebook"></i> Günlük Onayı
                 </a>
-                {% elif current_user.role == 'admin' %}
-                <span class="nav-item nav-hint"><i class="ti ti-building"></i> Şirket & ilan</span>
-                {% endif %}
-                <a href="{{ url_for('logout') }}" class="nav-item logout">
-                    <i class="ti ti-logout"></i> Çıkış
+                <a href="{{ url_for('danisman_puanlama') }}" class="nav-item {% if active_page == 'puanlama' %}active{% endif %}">
+                    <i class="ti ti-star"></i> Puanlama
                 </a>
+                {% elif user_role == 'admin' %}
+                <a href="{{ url_for('admin_home') }}" class="nav-item {% if active_page == 'anasayfa' %}active{% endif %}">
+                    <i class="ti ti-layout-dashboard"></i> Dashboard
+                </a>
+                <a href="{{ url_for('admin_ogrenciler') }}" class="nav-item {% if active_page == 'ogrenciler' %}active{% endif %}">
+                    <i class="ti ti-users"></i> Öğrenciler
+                </a>
+                <a href="{{ url_for('admin_basvurular') }}" class="nav-item {% if active_page == 'basvurular' %}active{% endif %}">
+                    <i class="ti ti-file-text"></i> Başvurular
+                </a>
+                <a href="{{ url_for('admin_sirketler') }}" class="nav-item {% if active_page == 'sirketler' %}active{% endif %}">
+                    <i class="ti ti-building"></i> Şirketler
+                </a>
+                <a href="{{ url_for('admin_raporlar') }}" class="nav-item {% if active_page == 'raporlar' %}active{% endif %}">
+                    <i class="ti ti-chart-bar"></i> Raporlar
+                </a>
+                {% endif %}
             </nav>
-            <div class="user-profile">
-                <p class="profile-name">{{ current_user.name }}</p>
-                <span class="role-badge role-{{ current_user.role }}">
-                    {% if current_user.role == 'admin' %}Yönetici
-                    {% elif current_user.role == 'danisman' %}Danışman
-                    {% else %}Öğrenci{% endif %}
-                </span>
-            </div>
+
+            <a href="{{ url_for('logout') }}" class="nav-item logout">
+                <i class="ti ti-logout"></i> Çıkış
+            </a>
         </aside>
 
         <main class="main-content">
+            <header class="page-header-bar">
+                <div>
+                    <h1 class="page-title">{{ page_title|default('Ana Sayfa') }}</h1>
+                    <p class="page-sub">{{ institution_name }}</p>
+                </div>
+                <div class="header-user">
+                    <div class="header-user-text">
+                        <span class="header-greet">Hoş geldin,</span>
+                        <strong>{{ current_user.name }}</strong>
+                        <span class="header-date">{{ today_str }}</span>
+                    </div>
+                    <div class="header-avatar">{{ current_user.name[0]|upper }}</div>
+                </div>
+            </header>
+
             {% with messages = get_flashed_messages(with_categories=true) %}
               {% if messages %}
                 <div class="flash-list">
@@ -57,13 +98,9 @@
                 </div>
               {% endif %}
             {% endwith %}
+
             {% block content %}{% endblock %}
         </main>
     </div>
-    <script>
-      document.getElementById('today-date')?.append(
-        new Date().toLocaleDateString('tr-TR', { weekday:'long', day:'numeric', month:'long', year:'numeric' })
-      );
-    </script>
 </body>
 </html>

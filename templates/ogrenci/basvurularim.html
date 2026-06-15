@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card full-width">
+    <h2><i class="ti ti-file-text"></i> Başvurularım</h2>
+    {% if applies %}
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr><th>Şirket</th><th>İlan</th><th>Tür</th><th>Tarih</th><th>Durum</th></tr>
+            </thead>
+            <tbody>
+                {% for a in applies %}
+                <tr>
+                    <td><strong>{{ a.company_name }}</strong></td>
+                    <td>{{ a.program.title if a.program else '—' }}</td>
+                    <td>{{ a.internship_type }}</td>
+                    <td>{{ a.start_date }}</td>
+                    <td><span class="badge badge-{{ a.status|status_badge }}">{{ a.status }}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="empty">Henüz başvurun yok. <a href="{{ url_for('ogrenci_ilanlar') }}">Staj ilanlarına göz at</a>.</p>
+    {% endif %}
+</section>
+{% endblock %}

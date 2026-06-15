@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="welcome-banner">
+    <h2>Merhaba, {{ current_user.name.split()[-1] if current_user.name else 'Danışman' }}! 👋</h2>
+    <p>Öğrenci başvurularını ve günlük kayıtlarını onaylayabilir, staj puanlaması yapabilirsiniz.</p>
+</section>
+
+<section class="card profil-card">
+    <div class="profil-row">
+        <div class="profil-avatar">{{ current_user.name[0]|upper }}</div>
+        <div>
+            <strong class="profil-name">{{ current_user.name }}</strong>
+            {% if current_user.title %}<span class="profil-sub">{{ current_user.title }}</span>{% endif %}
+            {% if current_user.department %}<span class="profil-sub">{{ current_user.department }}</span>{% endif %}
+            <span class="profil-sub">{{ institution_name }}</span>
+        </div>
+    </div>
+</section>
+
+<div class="stats-grid">
+    <div class="stat-card warn">
+        <div class="stat-icon"><i class="ti ti-hourglass"></i></div>
+        <div class="stat-num">{{ stats.bekleyen_basvuru }}</div>
+        <div class="stat-label">Bekleyen Başvuru</div>
+    </div>
+    <div class="stat-card warn">
+        <div class="stat-icon"><i class="ti ti-notebook"></i></div>
+        <div class="stat-num">{{ stats.bekleyen_gunluk }}</div>
+        <div class="stat-label">Bekleyen Günlük</div>
+    </div>
+    <div class="stat-card success">
+        <div class="stat-icon"><i class="ti ti-check"></i></div>
+        <div class="stat-num">{{ stats.onaylanan }}</div>
+        <div class="stat-label">Onaylanan Staj</div>
+    </div>
+    <div class="stat-card danger">
+        <div class="stat-icon"><i class="ti ti-x"></i></div>
+        <div class="stat-num">{{ stats.reddedilen }}</div>
+        <div class="stat-label">Reddedilen</div>
+    </div>
+</div>
+
+<div class="home-cards">
+    <a href="{{ url_for('danisman_basvurular') }}" class="home-card home-card-orange home-card-link">
+        <div class="home-card-icon"><i class="ti ti-briefcase"></i></div>
+        <h3>Başvuru Onayı</h3>
+        <p>{{ stats.bekleyen_basvuru }} bekleyen başvuru</p>
+    </a>
+    <a href="{{ url_for('danisman_gunluk') }}" class="home-card home-card-purple home-card-link">
+        <div class="home-card-icon"><i class="ti ti-notebook"></i></div>
+        <h3>Günlük Onayı</h3>
+        <p>{{ stats.bekleyen_gunluk }} bekleyen günlük</p>
+    </a>
+    <a href="{{ url_for('danisman_puanlama') }}" class="home-card home-card-green home-card-link">
+        <div class="home-card-icon"><i class="ti ti-star"></i></div>
+        <h3>Staj Puanlama</h3>
+        <p>Onaylanan stajları değerlendir</p>
+    </a>
+</div>
+{% endblock %}

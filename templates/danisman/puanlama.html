@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card full-width">
+    <h2><i class="ti ti-star"></i> Staj Puanlama</h2>
+    {% if onaylananlar %}
+    <div class="approval-list">
+        {% for a in onaylananlar %}
+        <article class="approval-item" style="border-left-color:#10b981;">
+            <div class="approval-main">
+                <div class="approval-student">
+                    <span class="avatar">{{ (a.student.name[0] if a.student else '?')|upper }}</span>
+                    <div>
+                        <strong>{{ a.student.name if a.student else 'Öğrenci' }}</strong>
+                        <span class="sub">{{ a.company_name }}</span>
+                    </div>
+                </div>
+                {% if a.score is not none %}
+                <p class="eval-done"><i class="ti ti-check"></i> Puan: {{ a.score }}/100
+                    {% if a.advisor_note %} — {{ a.advisor_note }}{% endif %}
+                </p>
+                {% else %}
+                <form method="POST" action="{{ url_for('action_score', apply_id=a.id) }}" class="score-form">
+                    <input type="number" name="score" min="0" max="100" placeholder="Puan (0-100)" required>
+                    <input type="text" name="advisor_note" placeholder="Not (opsiyonel)">
+                    <button type="submit" class="btn-approve"><i class="ti ti-star"></i> Kaydet</button>
+                </form>
+                {% endif %}
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="empty">Puanlanacak onaylı staj yok.</p>
+    {% endif %}
+</section>
+{% endblock %}

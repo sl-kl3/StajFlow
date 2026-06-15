@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="dashboard-grid">
+    <section class="card">
+        <h2><i class="ti ti-pencil"></i> Günlük Ekle</h2>
+        {% if apply %}
+        <form action="{{ url_for('add_log') }}" method="POST" class="stack-form">
+            <input type="number" name="hours" min="1" max="12" placeholder="Kaç saat çalıştınız?" required>
+            <textarea name="content" rows="5" placeholder="Bugün ne yaptınız?" required></textarea>
+            <button type="submit" class="btn-main">Gönder</button>
+        </form>
+        {% else %}
+        <p class="hint">Günlük eklemek için onaylanmış bir stajınız olmalı.</p>
+        {% endif %}
+    </section>
+</div>
+
+<section class="card full-width">
+    <h2><i class="ti ti-notebook"></i> Günlüklerim</h2>
+    {% if logs %}
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr><th>Tarih</th><th>Saat</th><th>İçerik</th><th>Durum</th></tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                    <td>{{ log.date.strftime('%d.%m.%Y %H:%M') }}</td>
+                    <td>{{ log.hours or '-' }} saat</td>
+                    <td>{{ log.content }}</td>
+                    <td><span class="badge badge-{{ log.status|status_badge }}">{{ log.status }}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="empty">Henüz günlük yok.</p>
+    {% endif %}
+</section>
+{% endblock %}

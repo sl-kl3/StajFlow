@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="stats-grid">
+    <div class="stat-card purple">
+        <div class="stat-icon"><i class="ti ti-school"></i></div>
+        <div class="stat-num">{{ stats.ogrenci }}</div>
+        <div class="stat-label">Toplam Öğrenci</div>
+    </div>
+    <div class="stat-card warn">
+        <div class="stat-icon"><i class="ti ti-hourglass"></i></div>
+        <div class="stat-num">{{ stats.bekleyen_basvuru }}</div>
+        <div class="stat-label">Bekleyen Başvuru</div>
+    </div>
+    <div class="stat-card success">
+        <div class="stat-icon"><i class="ti ti-check"></i></div>
+        <div class="stat-num">{{ stats.onaylanan }}</div>
+        <div class="stat-label">Onaylanan Staj</div>
+    </div>
+    <div class="stat-card danger">
+        <div class="stat-icon"><i class="ti ti-x"></i></div>
+        <div class="stat-num">{{ stats.reddedilen }}</div>
+        <div class="stat-label">Reddedilen</div>
+    </div>
+</div>
+
+<section class="card full-width">
+  <div class="card-header">
+    <h2><i class="ti ti-list"></i> Başvuru Listesi</h2>
+    <a href="{{ url_for('admin_basvurular') }}" class="btn-link">Tümünü Gör</a>
+  </div>
+    {% if internships %}
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr><th>Öğrenci Adı</th><th>Şirket</th><th>Başvuru Tarihi</th><th>Durum</th></tr>
+            </thead>
+            <tbody>
+                {% for i in internships %}
+                <tr>
+                    <td>{{ i.student.name if i.student else '—' }}</td>
+                    <td>{{ i.company_name }}</td>
+                    <td>{{ i.created_at.strftime('%d.%m.%Y') if i.created_at else i.start_date }}</td>
+                    <td><span class="badge badge-{{ i.status|status_badge }}">{{ i.status }}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="empty">Başvuru yok.</p>
+    {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card full-width">
+    <h2><i class="ti ti-clock"></i> Onaylanacak Staj Başvuruları</h2>
+    {% if applies %}
+    <div class="approval-list">
+        {% for a in applies %}
+        <article class="approval-item">
+            <div class="approval-main">
+                <div class="approval-student">
+                    <span class="avatar">{{ (a.student.name[0] if a.student else '?')|upper }}</span>
+                    <div>
+                        <strong>{{ a.student.name if a.student else 'Öğrenci' }}</strong>
+                        {% if a.student and a.student.student_no %}
+                        <span class="sub">{{ a.student.student_no }} · {{ a.student.department or '' }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="approval-detail">
+                    <p class="detail-title">{{ a.company_name }}</p>
+                    {% if a.program %}<p class="detail-sub">{{ a.program.title }}</p>{% endif %}
+                    <p class="detail-meta">
+                        <span class="badge badge-type">{{ a.internship_type }}</span>
+                        <span>{{ a.start_date }}{% if a.end_date %} – {{ a.end_date }}{% endif %}</span>
+                    </p>
+                </div>
+            </div>
+            <div class="approval-actions">
+                <form method="POST" action="{{ url_for('action_apply', apply_id=a.id, action='ok') }}">
+                    <button type="submit" class="btn-approve"><i class="ti ti-check"></i> Onayla</button>
+                </form>
+                <form method="POST" action="{{ url_for('action_apply', apply_id=a.id, action='no') }}" onsubmit="return confirm('Reddedilsin mi?');">
+                    <button type="submit" class="btn-reject"><i class="ti ti-x"></i> Reddet</button>
+                </form>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state"><i class="ti ti-circle-check"></i><p>Bekleyen başvuru yok.</p></div>
+    {% endif %}
+</section>
+{% endblock %}

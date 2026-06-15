@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card full-width">
+    <h2><i class="ti ti-star"></i> Staj Değerlendirmem</h2>
+    {% if apply %}
+    <div class="eval-box">
+        <p><span class="label">Şirket</span> <strong>{{ apply.company_name }}</strong></p>
+        <p><span class="label">Puan</span> <strong class="eval-score">{{ apply.score }}/100</strong></p>
+        {% if apply.advisor_note %}
+        <p><span class="label">Danışman Notu</span> {{ apply.advisor_note }}</p>
+        {% endif %}
+    </div>
+    {% else %}
+    <p class="empty">Henüz puanlanmış bir stajınız yok.</p>
+    {% endif %}
+</section>
+
+<section class="card full-width">
+    <h2>Günlük Onay Durumları</h2>
+    {% if logs %}
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Tarih</th><th>İçerik</th><th>Durum</th></tr></thead>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                    <td>{{ log.date.strftime('%d.%m.%Y') }}</td>
+                    <td>{{ log.content[:80] }}{% if log.content|length > 80 %}…{% endif %}</td>
+                    <td><span class="badge badge-{{ log.status|status_badge }}">{{ log.status }}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="empty">Kayıt yok.</p>
+    {% endif %}
+</section>
+{% endblock %}

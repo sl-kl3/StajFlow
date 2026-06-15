@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="welcome-banner">
+    <h2>Merhaba, {{ current_user.name.split()[0] }}! 👋</h2>
+    <p>Staj sürecini aşağıdaki kartlardan takip edebilir, profil ve belgelerini güncelleyebilirsin.</p>
+</section>
+
+<div class="home-cards">
+    <article class="home-card home-card-green">
+        <div class="home-card-icon"><i class="ti ti-briefcase"></i></div>
+        <h3>Aktif Stajım</h3>
+        {% if approved %}
+        <p class="home-card-main">{{ approved.company_name }}</p>
+        <ul class="home-card-stats">
+            <li><span>Durum</span><strong>Devam ediyor</strong></li>
+            <li><span>Tarih</span><strong>{{ approved.start_date }}{% if approved.end_date %} – {{ approved.end_date }}{% endif %}</strong></li>
+            <li><span>Tür</span><strong>{{ approved.internship_type }}</strong></li>
+        </ul>
+        <a href="{{ url_for('ogrenci_basvurularim') }}" class="home-card-btn">Detayları Gör</a>
+        {% else %}
+        <p class="home-card-main">Onaylı staj yok</p>
+        <a href="{{ url_for('ogrenci_ilanlar') }}" class="home-card-btn">İlanlara Git</a>
+        {% endif %}
+    </article>
+
+    <article class="home-card home-card-orange">
+        <div class="home-card-icon"><i class="ti ti-file-text"></i></div>
+        <h3>Bekleyen Başvurularım</h3>
+        <ul class="home-card-stats">
+            <li><span>İncelemede</span><strong>{{ stats.bekleyen }} başvuru</strong></li>
+            <li><span>Toplam</span><strong>{{ stats.toplam_basvuru }} başvuru</strong></li>
+        </ul>
+        <a href="{{ url_for('ogrenci_basvurularim') }}" class="home-card-btn">Başvuruları Gör</a>
+    </article>
+
+    <article class="home-card home-card-purple">
+        <div class="home-card-icon"><i class="ti ti-pencil"></i></div>
+        <h3>Günlük Giriş Yap</h3>
+        <ul class="home-card-stats">
+            <li><span>Bu hafta</span><strong>{{ stats.gunluk_hafta }} kayıt</strong></li>
+            <li><span>Toplam</span><strong>{{ stats.gunluk_toplam }} gün</strong></li>
+        </ul>
+        <a href="{{ url_for('ogrenci_gunluk') }}" class="home-card-btn">+ Günlük Ekle</a>
+    </article>
+</div>
+
+<section class="card">
+    <h2><i class="ti ti-user"></i> Profil Bilgilerim</h2>
+    <form action="{{ url_for('ogrenci_profil') }}" method="POST" enctype="multipart/form-data" class="profile-form">
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Ad Soyad</label>
+                <input type="text" value="{{ current_user.name }}" disabled>
+            </div>
+            <div class="form-group">
+                <label>Öğrenci No</label>
+                <input type="text" value="{{ current_user.student_no or '' }}" disabled>
+            </div>
+            <div class="form-group">
+                <label>GANO</label>
+                <input type="number" name="gpa" step="0.01" min="0" max="4" value="{{ current_user.gpa or '' }}" placeholder="3.50">
+            </div>
+            <div class="form-group">
+                <label>Mezun Olduğu Okul</label>
+                <input type="text" name="graduated_school" value="{{ current_user.graduated_school or '' }}" placeholder="Lisans / önlisans">
+            </div>
+            <div class="form-group">
+                <label>Bölüm</label>
+                <input type="text" name="department" value="{{ current_user.department or '' }}" placeholder="Bilgisayar Mühendisliği">
+            </div>
+            <div class="form-group">
+                <label>Yabancı Dil</label>
+                <input type="text" name="foreign_language" value="{{ current_user.foreign_language or '' }}" placeholder="İngilizce — B2">
+            </div>
+            <div class="form-group full">
+                <label>İş / Proje Tecrübesi</label>
+                <textarea name="experience" rows="3" placeholder="Staj, proje veya iş deneyimleriniz">{{ current_user.experience or '' }}</textarea>
+            </div>
+            <div class="form-group">
+                <label>Telefon</label>
+                <input type="text" name="phone" value="{{ current_user.phone or '' }}" placeholder="05xx xxx xx xx">
+            </div>
+        </div>
+
+        <h3 class="section-subtitle"><i class="ti ti-paperclip"></i> Belgeler</h3>
+        <div class="doc-upload-grid">
+            {% set doc_labels = {'cv': 'CV', 'diploma': 'Mezuniyet Belgesi', 'certificate': 'Sertifika', 'other': 'Diğer Belgeler'} %}
+            {% for dtype, label in doc_labels.items() %}
+            <div class="doc-upload-item">
+                <label>{{ label }}</label>
+                <input type="file" name="{{ dtype }}" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg">
+                {% for d in documents if d.doc_type == dtype %}
+                <a class="doc-link" href="{{ url_for('uploaded_file', filename=d.filename) }}" target="_blank">
+                    <i class="ti ti-file"></i> {{ d.original_name }}
+                </a>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+        <button type="submit" class="btn-main">Profili Kaydet</button>
+    </form>
+</section>
+{% endblock %}

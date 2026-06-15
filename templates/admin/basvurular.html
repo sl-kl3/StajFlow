@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card full-width">
+    <h2><i class="ti ti-file-text"></i> Tüm Başvurular</h2>
+    {% if internships %}
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr><th>Öğrenci</th><th>Şirket</th><th>İlan</th><th>Tarih</th><th>Durum</th><th>Puan</th></tr>
+            </thead>
+            <tbody>
+                {% for i in internships %}
+                <tr>
+                    <td>{{ i.student.name if i.student else '—' }}</td>
+                    <td>{{ i.company_name }}</td>
+                    <td>{{ i.program.title if i.program else '—' }}</td>
+                    <td>{{ i.created_at.strftime('%d.%m.%Y') if i.created_at else i.start_date }}</td>
+                    <td><span class="badge badge-{{ i.status|status_badge }}">{{ i.status }}</span></td>
+                    <td>{{ i.score if i.score is not none else '—' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="empty">Başvuru yok.</p>
+    {% endif %}
+</section>
+{% endblock %}

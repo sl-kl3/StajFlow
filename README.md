@@ -1,18 +1,16 @@
 # StajFlow
 
-Bilgisayar Mühendisliği staj takip projesi.
+BM staj projesi. Flask ile yaptik.
 
-## Sistem
+## Ne var icinde?
 
-| Rol | Görev |
-|-----|--------|
-| **Sistem yöneticisi** | Şirket kaydı, staj ilanı yayınlama (şirketlerin ayrı hesabı yok) |
-| **Öğrenci** | Şirket ilanlarına başvuru, staj günlüğü |
-| **Danışman** | Başvuru ve günlük onayı |
+Admin sirket/ilan ekliyor, ogrenci basvurup gunluk yaziyor, danisman onayliyor ve puan veriyor.
+Ogrenci profil doldurup cv falan da yukleyebiliyor.
 
-## Kurulum
+## Nasil calistirilir
 
-```bash
+```
+git pull
 pip install -r requirements.txt
 python setup_db.py
 python app.py
@@ -20,10 +18,30 @@ python app.py
 
 http://127.0.0.1:5000
 
-## Test hesapları
+## Giris (demo)
 
-| Rol | E-posta | Şifre |
-|-----|---------|-------|
-| Yönetici | admin@staj.edu.tr | admin123 |
-| Danışman | hoca@staj.edu.tr | hoca123 |
-| Öğrenci | ogr@staj.edu.tr | ogr123 |
+- admin@staj.edu.tr / admin123
+- danisman@staj.edu.tr / danisman123
+- ogr@staj.edu.tr / ogr123
+
+## Dosyalar
+
+- app.py - route lar burda
+- models.py - db tablolari
+- db_seed.py - ornek veri
+- setup_db.py - db sifirla (sunumdan once calistir)
+- templates/ - html ler
+- static/css/style.css - css
+
+## instance klasoru
+
+Programi acinca olusuyor, icinde veritabani ve yuklenen dosyalar var. Git e gitmez normal.
+Sorun olursa setup_db.py tekrar calistir.
+
+## Uni adi degistirmek icin (istege bagli)
+
+PowerShell:
+```
+$env:UNIVERSITY_NAME="Bizim Universite"
+python app.py
+```
