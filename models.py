@@ -1,3 +1,5 @@
+ #StajFlow veritabani modelleri(7
+#User,universty,Company,Interı
 from datetime import datetime
 
 from flask_login import UserMixin
