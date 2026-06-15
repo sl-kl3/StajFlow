@@ -1,3 +1,5 @@
+# StajFlow veritabani modelleri (7 tablo)
+# User, University, Company, InternshipProgram, Internship, DailyLog, StudentDocument
 from datetime import datetime
 
 from flask_login import UserMixin
