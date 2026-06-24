@@ -10,7 +10,7 @@
             <select name="role">
                 <option value="ogrenci">Öğrenci</option>
                 <option value="danisman">Danışman</option>
-                <option value="admin">Yönetici</option>
+                <option value="admin">Admin</option>
             </select>
             <input type="text" name="student_no" placeholder="Öğrenci no">
             <input type="text" name="department" placeholder="Bölüm">
@@ -30,7 +30,7 @@
                     <td>{{ user.name }}</td>
                     <td>{{ user.email }}</td>
                     <td>
-                        {% if user.role == 'admin' %}Yönetici
+                        {% if user.role == 'admin' %}Admin
                         {% elif user.role == 'danisman' %}Danışman
                         {% else %}Öğrenci{% endif %}
                     </td>
