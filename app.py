@@ -554,17 +554,24 @@ def admin_home():
     )
 
 
+@app.route('/admin/kullanicilar')
+@login_required
+@role_required('admin')
+def admin_kullanicilar():
+    users = User.query.order_by(User.role, User.name).all()
+    return render_template(
+        'admin/kullanicilar.html',
+        active_page='kullanicilar',
+        page_title='Kullanıcılar',
+        users=users,
+    )
+
+
 @app.route('/admin/ogrenciler')
 @login_required
 @role_required('admin')
-def admin_ogrenciler():
-    users = User.query.order_by(User.role, User.name).all()
-    return render_template(
-        'admin/ogrenciler.html',
-        active_page='ogrenciler',
-        page_title='Öğrenciler',
-        users=users,
-    )
+def admin_ogrenciler_redirect():
+    return redirect(url_for('admin_kullanicilar'))
 
 
 @app.route('/admin/basvurular')
@@ -620,11 +627,11 @@ def admin_add_user():
 
     if not all([name, email, password]):
         flash('Tüm alanları doldurun.', 'error')
-        return redirect(url_for('admin_ogrenciler'))
+        return redirect(url_for('admin_kullanicilar'))
 
     if User.query.filter_by(email=email).first():
         flash('Bu e-posta zaten kayıtlı.', 'error')
-        return redirect(url_for('admin_ogrenciler'))
+        return redirect(url_for('admin_kullanicilar'))
 
     uni = University.query.filter_by(is_active=True).first()
     student_no = request.form.get('student_no', '').strip() or None
@@ -643,7 +650,7 @@ def admin_add_user():
     ))
     db.session.commit()
     flash(f'{name} eklendi.', 'success')
-    return redirect(url_for('admin_ogrenciler'))
+    return redirect(url_for('admin_kullanicilar'))
 
 
 @app.route('/admin/delete_user/<int:user_id>', methods=['POST'])
@@ -653,7 +660,7 @@ def admin_delete_user(user_id):
     user = User.query.get_or_404(user_id)
     if user.id == current_user.id:
         flash('Kendi hesabınızı silemezsiniz.', 'error')
-        return redirect(url_for('admin_ogrenciler'))
+        return redirect(url_for('admin_kullanicilar'))
     docs = StudentDocument.query.filter_by(student_id=user.id).all()
     for doc in docs:
         path = os.path.join(app.config['UPLOAD_FOLDER'], doc.filename)
@@ -665,7 +672,7 @@ def admin_delete_user(user_id):
     db.session.delete(user)
     db.session.commit()
     flash('Kullanıcı silindi.', 'success')
-    return redirect(url_for('admin_ogrenciler'))
+    return redirect(url_for('admin_kullanicilar'))
 
 
 @app.route('/admin/add_company', methods=['POST'])

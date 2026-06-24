@@ -103,11 +103,12 @@ REST API yok — normal web formu + sayfa yonlendirme kullaniyoruz.
 **Ezberle:**
 > "Admin panelinin ekranlarini hazirladim. Kullanici, sirket, ilan yonetimi bende."
 
-**Goster:** Admin gir → ogrenci ekle → sirket + ilan ekle → raporlar
+**Goster:** Admin gir → kullanici ekle (ogrenci/danisman/admin) → sirket + ilan ekle → raporlar
 
 **Hoca sorarsa:**
 - Admin ne yapar? → Altyapiyi kurar (kullanici, sirket, ilan)
 - Kontenjan? → Program eklerken quota alani
+- Neden "Kullanicilar" sayfasi? → Sadece ogrenci degil, danisman ve admin de ekleniyor
 
 ---
 
@@ -164,6 +165,38 @@ Demo hesaplar README'de.
 | Sifre guvenli mi? | Hash'leniyor (Werkzeug) |
 | Dosya yukleme? | Uzanti kontrolu var, max 16 MB |
 | CSRF var mi? | Hayir — demo projesi, canliya alinsa eklenir |
+| Kayit sayfasi var mi? | Hayir — admin kullanici ekliyor + demo seed verisi |
+| Demo hesaplar nereden? | db_seed.py — sunum icin otomatik yukleniyor |
+| Sirketler gercek mi? | Hayir — seed_sirketler() ile ornek 3 firma + ilan |
+
+### Demo hesaplar ve sirketler (detay — Nazli anlatsin)
+
+**Demo hesaplar nasil var?**
+- Dosya: `db_seed.py` → `DEMO_USERS` listesi
+- Uygulama acilinca veya `python setup_db.py` calisinca veritabanina eklenir
+- Sifreler hash ile saklanir (Werkzeug)
+- Kayit ekrani yok — bilincli tercih, admin panelinden de eklenebilir
+
+| Hesap | Sifre | Rol |
+|-------|-------|-----|
+| admin@staj.edu.tr | admin123 | Admin |
+| danisman@staj.edu.tr | danisman123 | Danisman |
+| ogr@staj.edu.tr | ogr123 | Ogrenci |
+
+**Sirketler nereden geliyor?**
+- `db_seed.py` → `seed_sirketler()` fonksiyonu
+- Ilk kurulumda 3 ornek sirket + 3 staj ilani ekler
+- Gercek firmalar degil, sunumda akisi gostermek icin
+- Sonradan admin panelinden yeni sirket/ilan eklenebilir
+
+Ornek sirketler: Anadolu Yazilim, Tekno A.S., DataHub Ltd.
+
+### Admin kullanici ekleme (Zuhal anlatsin)
+
+- Sayfa: **Kullanicilar** (`/admin/kullanicilar`) — eskiden "Ogrenciler" yaziyordu, duzelttik
+- Ogrenci secilince → ogrenci no + bolum alanlari cikar
+- Danisman veya Admin secilince → o alanlar gizlenir (gerek yok)
+
 
 ### "Sen ne yaptin?" — tek cumle
 
@@ -247,7 +280,7 @@ models.py        → Nazli
 db_seed.py       → Nazli
 setup_db.py      → Nazli
 templates/ogrenci/   → Mine
-templates/admin/     → Zuhal
+templates/admin/kullanicilar.html → Zuhal (kullanici ekleme)
 templates/danisman/  → Ilknur
 base.html, login.html, style.css → Ilknur
 EKIP.md          → kisa is dagilimi (bu kalabilir)
