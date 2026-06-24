@@ -197,6 +197,100 @@ Ornek sirketler: Anadolu Yazilim, Tekno A.S., DataHub Ltd.
 - Ogrenci secilince → ogrenci no + bolum alanlari cikar
 - Danisman veya Admin secilince → o alanlar gizlenir (gerek yok)
 
+---
+
+## 9. Demo kisiler, hesap acma, profil (sunumda cikabilir)
+
+### Demo kisiler kim? (Ayse, Yilmaz hoca)
+
+Bunlar **gercek kisi degil** — `db_seed.py` icinde yazili ornek karakterler. Sunumda rol oynuyoruz.
+
+| Karakter | E-posta | Sifre | Rol | Kim anlatir / gosterir |
+|----------|---------|-------|-----|----------------------|
+| **Ayse Demir** | ogr@staj.edu.tr | ogr123 | Ogrenci | **Mine** |
+| **Dr. Ahmet Yilmaz** | danisman@staj.edu.tr | danisman123 | Danisman | **Salih** |
+| **Admin** | admin@staj.edu.tr | admin123 | Admin | **Zuhal** |
+
+**Ayse icin hazir profil (seed'den geliyor):**
+- Ogrenci no: 2021001001
+- Bolum: Bilgisayar Muhendisligi
+- GANO: 3.42
+- Mezun okul: Onlisans - Bilgisayar Programciligi
+- Deneyim ve yabanci dil de dolu (db_seed.py)
+
+**Hoca "Ayse kim?" derse (Mine):**
+> "Demo ogrenci hesabi. Staj basvurusu, profil ve gunluk akisini gostermek icin seed verisinde tanimli."
+
+**Hoca "Yilmaz hoca kim?" derse (Salih):**
+> "Demo danisman hesabi. Basvuru onaylama, gunluk onaylama ve puan verme islemlerini gostermek icin. Gercek hoca degil, ornek akademik danisman."
+
+---
+
+### Ogrenci hesabi nasil aciliyor? (cok sorulur)
+
+**Sistemde kayit ol (sign up) sayfasi YOK.**
+
+Akis soyle:
+
+```
+1. Admin girer (veya demo icin seed'den hazir gelir)
+2. Admin → Kullanicilar → Yeni kullanici ekler
+   (ad, e-posta, sifre, rol: ogrenci/danisman/admin)
+3. Ogrenciye e-posta + sifre verilir (gercek hayatta)
+4. Ogrenci login sayfasindan girer
+5. Ana sayfada profilini doldurur
+```
+
+**Hoca: "Ogrenci admin'e nasil basvuruyor, nerede anlatiyor?"**
+
+Durust cevap:
+> "Bu demo projesinde ogrencinin admin'e basvuru formu eklemedik. Gercek universitede staj koordinatoru veya bolum sekreterligi ogrenci listesini sisteme girer — admin panelinden manuel eklenir. Biz sunumda Ayse hesabini seed ile hazir biraktik; canli sistemde admin Kullanicilar sayfasindan ekler."
+
+**Kim cevaplar:** Zuhal (admin ekler) veya Nazli (seed mantigi)
+
+**Sunumda gostermek isterseniz:**
+1. Admin gir → Kullanicilar → yeni ogrenci ekle (test isim)
+2. Cikis yap → o ogrenci ile gir
+
+---
+
+### Profil bolumu ne ise yariyor? (Mine anlatsin)
+
+Ogrenci ana sayfasinda (**Profil Bilgilerim**) var.
+
+**Admin ne ekler vs ogrenci ne doldurur:**
+
+| Bilgi | Kim girer | Nerede |
+|-------|-----------|--------|
+| Ad soyad, e-posta, ogrenci no | Admin (hesap acarken) | Kullanicilar sayfasi |
+| GANO, mezun okul, bolum, deneyim, telefon, yabanci dil | Ogrenci kendisi | Profil formu |
+| CV, diploma, sertifika | Ogrenci yukler | Profil → Belgeler |
+
+**Neden var?**
+> Staj basvurusunda danisman ve admin ogrenciyi tanisin diye — not ortalamasi, deneyim, belgeler basvuru dosyasi gibi.
+
+**"Profili kaydet" deyince ne oluyor?**
+
+1. Form `POST /ogrenci/profil` adresine gider
+2. GANO 0-4 arasi mi kontrol edilir
+3. Bilgiler `user` tablosuna yazilir (gpa, graduated_school, experience...)
+4. Dosya varsa `instance/uploads/` klasorune kaydedilir
+5. Dosya adi `student_document` tablosuna yazilir
+6. Ekranda "Profil ve belgeler guncellendi" mesaji cikar
+
+**Hoca sorarsa (Mine):**
+> "Profil ogrencinin ek bilgilerini tutuyor. Admin sadece hesap aciyor; ogrenci kendi GANO, deneyim ve CV'sini sonra dolduruyor. Kaydedince veritabanina ve uploads klasorune gidiyor."
+
+**Teknik (isterseniz):** `app.py` → `ogrenci_profil()`, `save_document()`
+
+---
+
+### Butun akis — tek cumlede (herkes ezberlesin)
+
+> Admin kullanici ve sirket/ilan ekler → Ogrenci profil doldurup ilana basvurur → Danisman onaylar → Ogrenci gunluk yazar → Danisman puan verir.
+
+---
+
 
 ### "Sen ne yaptin?" — tek cumle
 
