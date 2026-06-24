@@ -29,6 +29,31 @@ GitHub'da gorunen isimler: sl-kl13 (Salih), minekoseoglu02-ctrl (Mine), nazlcns 
 
 ---
 
+## 1b. Sunumda KIM NEYI anlatir? (tablo)
+
+| Konu | Kim anlatir | Kim gosterir (canli) |
+|------|-------------|---------------------|
+| Proje ne, genel akis | Salih | — |
+| Giris, rol sistemi | Salih | Salih |
+| Veritabani, tablolar, setup_db | Nazli | Nazli |
+| Demo hesaplar, seed verisi | Nazli | Nazli |
+| Sirketler nereden geliyor | Nazli | Zuhal (admin sirketler) |
+| **Sistem mantigi (UBYS benzeri mi?)** | **Salih** | — |
+| **Admin ogrenciyi nasil ekliyor** | **Zuhal** | **Zuhal** |
+| **Profil ne ise yariyor, kaydedince ne olur** | **Mine** | **Mine** |
+| **Sifre kim veriyor, ogrenci degistirebilir mi** | **Salih** | — |
+| Ogrenci akisi (profil, basvuru, gunluk) | Mine | Mine |
+| Ayse demo karakteri | Mine | Mine |
+| Danisman onay, puanlama | Salih | Salih |
+| Yilmaz hoca demo karakteri | Salih | Salih |
+| Admin paneli, kullanici ekleme | Zuhal | Zuhal |
+| Arayuz, sidebar, login | Ilknur | Ilknur |
+| AI kullandik mi | Salih (veya herkes kendi kismi) | — |
+
+**Kural:** Soru kimin moduluyse o cevaplasin. Salih araya girip her seyi anlatmasin.
+
+---
+
 ## 2. Basit sozluk (hoca sorarsa)
 
 | Kelime | Ne demek |
@@ -254,34 +279,112 @@ Durust cevap:
 
 ---
 
-### Profil bolumu ne ise yariyor? (Mine anlatsin)
+## 10. Sistem mantigi — bizim uygulama ne? (Salih anlatsin)
 
-Ogrenci ana sayfasinda (**Profil Bilgilerim**) var.
+### Bu internet sitesi mi? Neye bagli?
 
-**Admin ne ekler vs ogrenci ne doldurur:**
+> **Hayir, herkese acik bir web sitesi degil.** Universitenin **ic staj takip sistemi** — UBYS gibi kurumsal bir yazilimin **sadece staj modulu** gibi dusunun.
 
-| Bilgi | Kim girer | Nerede |
-|-------|-----------|--------|
-| Ad soyad, e-posta, ogrenci no | Admin (hesap acarken) | Kullanicilar sayfasi |
-| GANO, mezun okul, bolum, deneyim, telefon, yabanci dil | Ogrenci kendisi | Profil formu |
-| CV, diploma, sertifika | Ogrenci yukler | Profil → Belgeler |
+| | UBYS (gercek uni) | StajFlow (bizim proje) |
+|--|-------------------|------------------------|
+| Ne | Tum uni isleri (ders, not, staj...) | Sadece staj basvuru/takip |
+| Kim kullanir | Ogrenci, hoca, idari | Ogrenci, danisman, admin |
+| Kayit | Uni sisteminden | Admin panelinden (bizde) |
+| Baglanti | Merkezi sistem | Ayri mini uygulama (demo) |
 
-**Neden var?**
-> Staj basvurusunda danisman ve admin ogrenciyi tanisin diye — not ortalamasi, deneyim, belgeler basvuru dosyasi gibi.
+**Hocaya:**
+> "UBYS mantiginda calisan ama **basitlestirilmis** bir staj modulu yaptik. Gercek UBYS ile entegre degil — ders projesi olarak ayri Flask uygulamasi. Universite aginda veya localhost'ta calisir, disaridan herkes giremez; once login gerekir."
+
+### Kim yonetiyor?
+
+```
+ADMIN (staj koordinatoru / bolum idari)
+  ├── Kullanici acar (ogrenci, danisman)
+  ├── Sirket ve staj ilani ekler
+  └── Raporlari gorur
+
+OGRENCI
+  ├── Profil ve belgelerini doldurur
+  ├── Ilana basvurur
+  └── Gunluk tutar
+
+DANISMAN (akademik danisman)
+  ├── Basvuru onaylar / reddeder
+  ├── Gunluk onaylar
+  └── Puan verir
+```
+
+**Admin = sistemi kuran/idare eden.** Ogrenci = kullanan. Danisman = onaylayan.
+
+---
+
+### Admin ogrenciyi NASIL ekliyor? (Zuhal anlatir + gosterir)
+
+**Kayit ol sayfasi YOK** — bilincli tercih.
+
+Gercek hayatta:
+1. Bolum sekreterligi / staj koordinatoru ogrenci listesini alir (Excel, OBS, UBYS ciktisi...)
+2. **Admin** StajFlow'a girer → **Kullanicilar** → ad, e-posta, sifre, rol: ogrenci, ogrenci no yazar
+3. Ogrenciye "su e-posta ve sifre ile gir" denir (e-posta, okul panosu vs.)
+4. Ogrenci ilk girisinde **profilini tamamlar** (asagida)
+
+Demo/sunumda:
+- Ayse hesabi `db_seed.py` ile hazir gelir (admin elle eklemez)
+- Canli gostermek icin: Zuhal admin olarak yeni test ogrencisi ekler
+
+**Hoca: "Ogrenci admin'e basvuru yapmiyor mu?"**
+> "Gercek hayatta ogrenci zaten universiteye kayitli — staj sistemine girmek icin bolum listeyi admin'e iletir, admin hesap acar. Biz kayit formu eklemedik; admin paneli yeterli demo icin. Canli sistemde e-posta daveti veya UBYS entegrasyonu eklenebilir."
+
+---
+
+### Admin ekledi, profil ne ise yariyor? (Mine anlatir)
+
+**Iki asamali kayit:**
+
+| Asama | Kim | Ne eklenir | Ornek |
+|-------|-----|------------|-------|
+| 1 — Hesap | Admin | Kimlik: ad, e-posta, sifre, rol, ogrenci no | "Ayse Demir, ogr@..., 2021001001" |
+| 2 — Profil | Ogrenci | Staj dosyasi: GANO, okul, deneyim, CV... | GANO 3.42, CV pdf |
+
+Admin **okula kayitli mi** bilgisini girer. Ogrenci **staj basvurusuna hazir dosyasini** tamamlar.
 
 **"Profili kaydet" deyince ne oluyor?**
 
-1. Form `POST /ogrenci/profil` adresine gider
-2. GANO 0-4 arasi mi kontrol edilir
-3. Bilgiler `user` tablosuna yazilir (gpa, graduated_school, experience...)
-4. Dosya varsa `instance/uploads/` klasorune kaydedilir
-5. Dosya adi `student_document` tablosuna yazilir
-6. Ekranda "Profil ve belgeler guncellendi" mesaji cikar
+1. Bilgiler veritabaninda `user` tablosuna yazilir
+2. CV vb. `instance/uploads/` klasorune kaydedilir
+3. Ogrenci tekrar girince profil **dolu gorunur** (ana sayfa)
+4. Basvuru yapinca danisman **ogrenci adi, no, bolum** gorur (Basvuru Onayi ekrani)
 
-**Hoca sorarsa (Mine):**
-> "Profil ogrencinin ek bilgilerini tutuyor. Admin sadece hesap aciyor; ogrenci kendi GANO, deneyim ve CV'sini sonra dolduruyor. Kaydedince veritabanina ve uploads klasorune gidiyor."
+**Profil bilgisi NEREDE gorunuyor? (durust tablo)**
 
-**Teknik (isterseniz):** `app.py` → `ogrenci_profil()`, `save_document()`
+| Bilgi | Ogrenci gorur | Danisman gorur | Admin gorur |
+|-------|---------------|----------------|-------------|
+| Ad, ogrenci no | Evet (profil) | Evet (basvuru listesi) | Evet (kullanici listesi) |
+| Bolum | Evet | Evet (basvuru listesi) | Evet |
+| GANO, deneyim, telefon | Evet (profil) | **Su an ekranda yok** | **Su an ekranda yok** |
+| CV / belgeler | Evet (profil linki) | Dosya yuklendiyse erisebilir | Evet |
+
+**Hoca "GANO nerede gorunuyor?" derse (Mine):**
+> "Veritabaninda kayitli. Danisman ekraninda henuz gostermiyoruz — demo kapsaminda basvuru listesinde ad, no ve bolum yeterli sandik. Ileride danisman paneline GANO ve CV linki eklenebilir."
+
+**Hoca "profil neden var admin zaten ekledi?" derse (Mine):**
+> "Admin sadece hesap aciyor — kim oldugunu sisteme tanimlatiyor. Profil ogrencinin staj basvuru bilgileri; UBYS'de de ogrenci baz bilgileri vardir, detaylari kendisi tamamlar veya gunceller."
+
+---
+
+### Sifre konusu (Salih anlatir)
+
+| Soru | Cevap |
+|------|-------|
+| Ilk sifreyi kim verir? | **Admin** — kullanici eklerken yazar |
+| Ogrenci sifre degistirebilir mi? | **Hayir** — su an sistemde sifre degistirme ekrani yok |
+| Ogrenci bilgilerini degistirebilir mi? | **Evet** — profil formundan (GANO, deneyim, CV...) |
+| Sifre unutulursa? | Admin yeni sifre belirler veya demo icin setup_db |
+
+**Hocaya (durust):**
+> "Demo kapsaminda sifre degistirme eklemedik. Gercek sistemde 'sifremi unuttum' veya profil ayarlarindan degistirme olur. Bilgi guncelleme profilden; sifre admin veya ayarlar sayfasindan olurdu."
+
+**Karistirma:** Profil kaydet = GANO, CV vs. Sifre = admin'in verdigi, degistirilemez (simdilik).
 
 ---
 
