@@ -8,16 +8,28 @@
             <input type="text" name="name" placeholder="Ad Soyad *" required>
             <input type="email" name="email" placeholder="Kurumsal e-posta *" required>
             <input type="password" name="password" placeholder="Şifre *" required>
-            <select name="role">
+            <select name="role" id="roleSelect" onchange="toggleStudentFields()">
                 <option value="ogrenci">Öğrenci</option>
                 <option value="danisman">Danışman</option>
                 <option value="admin">Admin</option>
             </select>
-            <input type="text" name="student_no" placeholder="Öğrenci no">
-            <input type="text" name="department" placeholder="Bölüm">
+            <input type="text" name="student_no" id="studentNo" placeholder="Öğrenci no">
+            <input type="text" name="department" id="departmentField" placeholder="Bölüm">
         </div>
         <button type="submit" class="btn-main">Kullanıcı Ekle</button>
     </form>
+    <script>
+    function toggleStudentFields() {
+        var ogrenci = document.getElementById('roleSelect').value === 'ogrenci';
+        document.getElementById('studentNo').style.display = ogrenci ? '' : 'none';
+        document.getElementById('departmentField').style.display = ogrenci ? '' : 'none';
+        if (!ogrenci) {
+            document.getElementById('studentNo').value = '';
+            document.getElementById('departmentField').value = '';
+        }
+    }
+    toggleStudentFields();
+    </script>
 </section>
 
 <section class="card full-width">

@@ -627,13 +627,18 @@ def admin_add_user():
         return redirect(url_for('admin_ogrenciler'))
 
     uni = University.query.filter_by(is_active=True).first()
+    student_no = request.form.get('student_no', '').strip() or None
+    department = request.form.get('department', '').strip() or None
+    if role != 'ogrenci':
+        student_no = None
+        department = None
     db.session.add(User(
         email=email,
         password=generate_password_hash(password),
         name=name,
         role=role,
-        student_no=request.form.get('student_no', '').strip() or None,
-        department=request.form.get('department', '').strip() or None,
+        student_no=student_no,
+        department=department,
         university_id=uni.id if uni else None,
     ))
     db.session.commit()
