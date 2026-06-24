@@ -440,6 +440,25 @@ def danisman_basvurular():
     )
 
 
+@app.route('/danisman/ogrenciler')
+@login_required
+@role_required('danisman')
+def danisman_ogrenciler():
+    students = User.query.filter_by(role='ogrenci').order_by(User.name).all()
+    for s in students:
+        s.latest_apply = (
+            Internship.query.filter_by(student_id=s.id)
+            .order_by(Internship.id.desc())
+            .first()
+        )
+    return render_template(
+        'danisman/ogrenciler.html',
+        active_page='ogrenciler',
+        page_title='Öğrenciler',
+        students=students,
+    )
+
+
 @app.route('/danisman/gunluk')
 @login_required
 @role_required('danisman')

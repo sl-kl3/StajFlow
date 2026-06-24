@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{# danisman ogrenci listesi - profil ozeti #}
+{% block content %}
+<section class="card full-width">
+    <h2><i class="ti ti-users"></i> Öğrenciler</h2>
+    <p class="detail-sub" style="margin-bottom:1rem;">Staj başvurusu yapan veya profil dolduran öğrencilerin bilgileri.</p>
+    {% if students %}
+    <div class="approval-list">
+        {% for s in students %}
+        <article class="approval-item">
+            <div class="approval-main">
+                <div class="approval-student">
+                    <span class="avatar">{{ s.name[0]|upper }}</span>
+                    <div>
+                        <strong>{{ s.name }}</strong>
+                        <span class="sub">
+                            {% if s.student_no %}{{ s.student_no }}{% endif %}
+                            {% if s.department %} · {{ s.department }}{% endif %}
+                        </span>
+                        <span class="sub">
+                            {% if s.gpa %}GANO: {{ s.gpa }}{% else %}GANO: —{% endif %}
+                            {% if s.phone %} · {{ s.phone }}{% endif %}
+                        </span>
+                        {% if s.graduated_school %}
+                        <span class="sub">{{ s.graduated_school }}</span>
+                        {% endif %}
+                        {% if s.foreign_language %}
+                        <span class="sub">{{ s.foreign_language }}</span>
+                        {% endif %}
+                        {% if s.experience %}
+                        <span class="sub">{{ s.experience[:150] }}{% if s.experience|length > 150 %}…{% endif %}</span>
+                        {% endif %}
+                        {% for d in s.documents %}
+                        <a class="doc-link" href="{{ url_for('uploaded_file', filename=d.filename) }}" target="_blank">
+                            <i class="ti ti-file"></i>
+                            {% if d.doc_type == 'cv' %}CV{% elif d.doc_type == 'diploma' %}Diploma{% elif d.doc_type == 'certificate' %}Sertifika{% else %}Belge{% endif %}:
+                            {{ d.original_name }}
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="approval-detail">
+                    {% if s.latest_apply %}
+                    <p class="detail-title">Son başvuru: {{ s.latest_apply.company_name }}</p>
+                    {% if s.latest_apply.program %}
+                    <p class="detail-sub">{{ s.latest_apply.program.title }}</p>
+                    {% endif %}
+                    <p class="detail-meta">
+                        <span class="badge badge-{{ s.latest_apply.status|status_badge }}">{{ s.latest_apply.status }}</span>
+                        {% if s.latest_apply.score is not none %}
+                        <span>Puan: {{ s.latest_apply.score }}/100</span>
+                        {% endif %}
+                    </p>
+                    {% else %}
+                    <p class="detail-sub">Henüz staj başvurusu yok</p>
+                    {% endif %}
+                </div>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state"><i class="ti ti-users"></i><p>Kayıtlı öğrenci yok.</p></div>
+    {% endif %}
+</section>
+{% endblock %}

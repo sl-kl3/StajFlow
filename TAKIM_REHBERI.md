@@ -366,14 +366,15 @@ Admin **okula kayitli mi** bilgisini girer. Ogrenci **staj basvurusuna hazir dos
 | CV / belgeler | Evet (profil linki) | Evet (basvuru onayinda CV linki) | — |
 
 **Profilin faydasi ne? (hoca sorarsa — Mine / Salih):**
-> "Ogrenci staj basvuru dosyasini dolduruyor. Danisman basvuruyu onaylarken GANO, deneyim ve CV'yi goruyor — karar versin diye. Admin kullanici listesinde GANO'yu gorebiliyor."
+> "Ogrenci staj dosyasini profilde dolduruyor. Danisman **Ogrenciler** sayfasinda tum ogrencileri, **Basvuru Onayi**'nda basvuruyla birlikte GANO, deneyim ve CV'yi goruyor."
 
 **"Profili kaydet" adim adim:**
 1. Bilgiler `user` tablosuna yazilir
 2. CV `instance/uploads/` + `student_document` tablosuna
 3. Ogrenci ana sayfada dolu gorur
-4. Basvuru yapinca danisman **Basvuru Onayi** ekraninda profil ozeti + CV linki cikar
-5. Admin **Kullanicilar** listesinde GANO sutununu gorur
+4. Danisman **Ogrenciler** ekraninda profil ozeti gorunur
+5. Basvuru yapinca **Basvuru Onayi**'nda da ayni bilgiler + sirket cikar
+6. Admin **Kullanicilar** listesinde GANO sutununu gorur
 
 ---
 

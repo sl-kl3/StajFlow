@@ -51,6 +51,11 @@
         <h3>Günlük Onayı</h3>
         <p>{{ stats.bekleyen_gunluk }} bekleyen günlük</p>
     </a>
+    <a href="{{ url_for('danisman_ogrenciler') }}" class="home-card home-card-link" style="--card-accent: #6366f1;">
+        <div class="home-card-icon"><i class="ti ti-users"></i></div>
+        <h3>Öğrenciler</h3>
+        <p>Profil ve başvuru bilgilerini gör</p>
+    </a>
     <a href="{{ url_for('danisman_puanlama') }}" class="home-card home-card-green home-card-link">
         <div class="home-card-icon"><i class="ti ti-star"></i></div>
         <h3>Staj Puanlama</h3>
