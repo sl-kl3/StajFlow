@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+    <a href="{{ url_for('danisman_ogrenciler') }}" class="detail-sub" style="display:inline-block;margin-bottom:1rem;">
+        <i class="ti ti-arrow-left"></i> Öğrencilere dön
+    </a>
+    <div class="profil-row">
+        <div class="profil-avatar">{{ student.name[0]|upper }}</div>
+        <div>
+            <strong class="profil-name">{{ student.name }}</strong>
+            <span class="profil-sub">{{ student.email }}</span>
+            {% if student.student_no %}<span class="profil-sub">Öğrenci no: {{ student.student_no }}</span>{% endif %}
+            {% if student.department %}<span class="profil-sub">{{ student.department }}</span>{% endif %}
+        </div>
+    </div>
+</section>
+
+<section class="card">
+    <h2><i class="ti ti-user"></i> Profil Bilgileri</h2>
+    <ul class="home-card-stats" style="margin-top:0.75rem;">
+        <li><span>GANO</span><strong>{{ student.gpa if student.gpa is not none else '—' }}</strong></li>
+        <li><span>Mezun okul</span><strong>{{ student.graduated_school or '—' }}</strong></li>
+        <li><span>Telefon</span><strong>{{ student.phone or '—' }}</strong></li>
+        <li><span>Yabancı dil</span><strong>{{ student.foreign_language or '—' }}</strong></li>
+    </ul>
+    {% if student.experience %}
+    <p class="detail-sub" style="margin-top:1rem;"><strong>Deneyim</strong><br>{{ student.experience }}</p>
+    {% endif %}
+</section>
+
+<section class="card">
+    <h2><i class="ti ti-paperclip"></i> Belgeler</h2>
+    {% if documents %}
+    <div class="doc-upload-grid" style="margin-top:0.75rem;">
+        {% for d in documents %}
+        <a class="doc-link" href="{{ url_for('uploaded_file', filename=d.filename) }}" target="_blank">
+            <i class="ti ti-file"></i>
+            {% if d.doc_type == 'cv' %}CV
+            {% elif d.doc_type == 'diploma' %}Mezuniyet belgesi
+            {% elif d.doc_type == 'certificate' %}Sertifika
+            {% else %}Diğer{% endif %}:
+            {{ d.original_name }}
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="detail-sub">Henüz belge yüklenmemiş.</p>
+    {% endif %}
+</section>
+
+<section class="card full-width">
+    <h2><i class="ti ti-briefcase"></i> Staj Başvuruları</h2>
+    {% if applies %}
+    <div class="table-wrap" style="margin-top:0.75rem;">
+        <table>
+            <thead><tr><th>Şirket</th><th>Program</th><th>Durum</th><th>Puan</th></tr></thead>
+            <tbody>
+                {% for a in applies %}
+                <tr>
+                    <td>{{ a.company_name }}</td>
+                    <td>{{ a.program.title if a.program else '—' }}</td>
+                    <td><span class="badge badge-{{ a.status|status_badge }}">{{ a.status }}</span></td>
+                    <td>{% if a.score is not none %}{{ a.score }}/100{% else %}—{% endif %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="detail-sub">Başvuru yok.</p>
+    {% endif %}
+</section>
+{% endblock %}

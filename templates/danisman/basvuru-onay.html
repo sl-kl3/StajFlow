@@ -14,19 +14,13 @@
                         {% if a.student and a.student.student_no %}
                         <span class="sub">{{ a.student.student_no }} · {{ a.student.department or '' }}</span>
                         {% endif %}
-                        {% if a.student %}
-                        <span class="sub">
-                            {% if a.student.gpa %}GANO: {{ a.student.gpa }}{% endif %}
-                            {% if a.student.phone %} · {{ a.student.phone }}{% endif %}
-                        </span>
-                        {% if a.student.experience %}
-                        <span class="sub">{{ a.student.experience[:120] }}{% if a.student.experience|length > 120 %}…{% endif %}</span>
+                        {% if a.student and a.student.gpa %}
+                        <span class="sub">GANO: {{ a.student.gpa }}</span>
                         {% endif %}
-                        {% for d in a.student.documents if d.doc_type == 'cv' %}
-                        <a class="doc-link" href="{{ url_for('uploaded_file', filename=d.filename) }}" target="_blank">
-                            <i class="ti ti-file"></i> CV: {{ d.original_name }}
+                        {% if a.student %}
+                        <a class="doc-link" href="{{ url_for('danisman_ogrenci_detay', student_id=a.student.id) }}">
+                            <i class="ti ti-user"></i> Profili incele
                         </a>
-                        {% endfor %}
                         {% endif %}
                     </div>
                 </div>

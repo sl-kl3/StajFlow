@@ -459,6 +459,28 @@ def danisman_ogrenciler():
     )
 
 
+@app.route('/danisman/ogrenci/<int:student_id>')
+@login_required
+@role_required('danisman')
+def danisman_ogrenci_detay(student_id):
+    student = User.query.get_or_404(student_id)
+    if normalize_role(student.role) != 'ogrenci':
+        abort(404)
+    applies = (
+        Internship.query.filter_by(student_id=student.id)
+        .order_by(Internship.id.desc())
+        .all()
+    )
+    return render_template(
+        'danisman/ogrenci-detay.html',
+        active_page='ogrenciler',
+        page_title=student.name,
+        student=student,
+        applies=applies,
+        documents=StudentDocument.query.filter_by(student_id=student.id).all(),
+    )
+
+
 @app.route('/danisman/gunluk')
 @login_required
 @role_required('danisman')

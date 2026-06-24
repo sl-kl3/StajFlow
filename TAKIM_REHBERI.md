@@ -45,6 +45,7 @@ GitHub'da gorunen isimler: sl-kl13 (Salih), minekoseoglu02-ctrl (Mine), nazlcns 
 | Ogrenci akisi (profil, basvuru, gunluk) | Mine | Mine |
 | Ayse demo karakteri | Mine | Mine |
 | Danisman onay, puanlama | Salih | Salih |
+| Danisman ogrenci listesi | Salih | Salih |
 | Yilmaz hoca demo karakteri | Salih | Salih |
 | Admin paneli, kullanici ekleme | Zuhal | Zuhal |
 | Arayuz, sidebar, login | Ilknur | Ilknur |
