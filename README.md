@@ -1,6 +1,8 @@
 # StajFlow
 
-BM staj projesi. Flask ile yaptik.
+BM yazilim muhendisligi staj projesi. 5 kisi yaptik.
+
+Ekip: Salih, Mine, Nazli, Zuhal, Ilknur
 
 ## Ne var icinde?
 
@@ -26,12 +28,12 @@ http://127.0.0.1:5000
 
 ## Dosyalar
 
-- app.py - route lar burda
-- models.py - db tablolari
+- app.py - route lar burda (flask)
+- models.py - db tablolari (Nazli)
 - db_seed.py - ornek veri
 - setup_db.py - db sifirla (sunumdan once calistir)
-- templates/ - html ler
-- static/css/style.css - css
+- templates/ - html sayfalari (jinja2 kullaniyoruz)
+- static/css/style.css - css (Ilknur)
 
 ## instance klasoru
 

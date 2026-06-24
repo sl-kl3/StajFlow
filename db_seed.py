@@ -1,4 +1,5 @@
 # StajFlow - demo kullanicilar ve baslangic verileri
+# Nazli: tablolar icin ornek veri burda
 import os
 
 from werkzeug.security import generate_password_hash
@@ -148,7 +149,7 @@ def seed_sirketler():
 
 
 def _ensure_columns():
-    """Eski veritabanlarina eksik sutunlari ekler (SQLite)."""
+    # eski db dosyasinda eksik sutun varsa ekler (sqlite icin)
     from sqlalchemy import inspect, text
 
     inspector = inspect(db.engine)

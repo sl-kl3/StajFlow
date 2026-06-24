@@ -1,3 +1,8 @@
+# StajFlow ana dosya
+# Flask ile web uygulamasi - route'lar burda
+# Salih: giris cikis, rol kontrolu, danisman onaylari
+# Mine: ogrenci sayfalari, profil, basvuru, gunluk
+
 import os
 from datetime import datetime, timedelta
 from functools import wraps
@@ -25,7 +30,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = upload_path
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
-ALLOWED_EXTENSIONS = {'pdf', 'png', 'jpg', 'jpeg', 'doc', 'docx'}
+ALLOWED_EXTENSIONS = {'pdf', 'png', 'jpg', 'jpeg', 'doc', 'docx'}  # yuklenebilir dosya turleri
 
 db.init_app(app)
 login_manager = LoginManager(app)
@@ -53,6 +58,7 @@ def status_badge(status):
 
 
 def role_required(*roles):
+    # yetkisiz kullaniciyi geri atar (decorator)
     normalized = {normalize_role(r) for r in roles}
 
     def decorator(view):
@@ -78,6 +84,7 @@ def role_home():
 
 
 def active_internship(student_id):
+    # ogrencinin su anki basvurusu (bekleyen veya onayli)
     return (
         Internship.query.filter_by(student_id=student_id)
         .filter(Internship.status.in_(['Onay Bekliyor', 'Onaylandı']))
@@ -111,6 +118,7 @@ def allowed_file(filename):
 
 
 def save_document(student_id, file, doc_type):
+    # cv diploma yukleme - Mine tarafi
     if not file or not file.filename:
         return True
     if not allowed_file(file.filename):
@@ -142,6 +150,8 @@ def save_document(student_id, file, doc_type):
 def load_user(user_id):
     return db.session.get(User, int(user_id))
 
+
+# --- giris cikis ---
 
 @app.route('/')
 def index():
@@ -199,7 +209,7 @@ def uploaded_file(filename):
     return send_from_directory(folder, filename)
 
 
-# ── Öğrenci sayfaları ──────────────────────────────────────────────
+# --- ogrenci sayfalari (Mine) ---
 
 @app.route('/ogrenci')
 @login_required
@@ -392,7 +402,7 @@ def add_log():
     return redirect(url_for('ogrenci_gunluk'))
 
 
-# ── Danışman sayfaları ─────────────────────────────────────────────
+# --- danisman sayfalari (Salih) ---
 
 @app.route('/danisman')
 @login_required
@@ -514,7 +524,7 @@ def action_score(apply_id):
     return redirect(url_for('danisman_puanlama'))
 
 
-# ── Admin sayfaları ─────────────────────────────────────────────────
+# --- admin sayfalari (Zuhal html + route burda) ---
 
 def admin_stats():
     users = User.query.all()
@@ -709,6 +719,7 @@ def admin_toggle_program(program_id):
     return redirect(url_for('admin_sirketler'))
 
 
+# uygulama acilinca db hazir olsun
 with app.app_context():
     init_database(app)
     os.makedirs(upload_path, exist_ok=True)

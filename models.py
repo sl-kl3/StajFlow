@@ -1,5 +1,6 @@
- #StajFlow veritabani modelleri(7
-#User,universty,Company,Interı
+# veritabani tablolari - Nazli
+# user, company, internship vs hepsi burda tanimli
+
 from datetime import datetime
 
 from flask_login import UserMixin
@@ -9,7 +10,7 @@ db = SQLAlchemy()
 
 
 class University(db.Model):
-    """Kurum bilgisi — her üniversite kendi örneğini yapılandırabilir."""
+    # uni adi falan, headerda gorunuyor
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150), nullable=False)
     short_name = db.Column(db.String(40), nullable=True)
@@ -21,6 +22,7 @@ class University(db.Model):
 
 
 class User(UserMixin, db.Model):
+    # ogrenci danisman admin hepsi bu tabloda, role alani ayiriyor
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
@@ -42,6 +44,7 @@ class User(UserMixin, db.Model):
 
 
 class StudentDocument(db.Model):
+    # ogrencinin yukledigi cv diploma vs
     id = db.Column(db.Integer, primary_key=True)
     student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     doc_type = db.Column(db.String(30), nullable=False)
@@ -62,6 +65,7 @@ class Company(db.Model):
 
 
 class InternshipProgram(db.Model):
+    # adminin actigi staj ilanlari
     id = db.Column(db.Integer, primary_key=True)
     company_id = db.Column(db.Integer, db.ForeignKey('company.id'), nullable=False)
     title = db.Column(db.String(150), nullable=False)
@@ -77,6 +81,7 @@ class InternshipProgram(db.Model):
 
 
 class Internship(db.Model):
+    # ogrenci basvurusu, status: Onay Bekliyor / Onaylandi / Reddedildi
     id = db.Column(db.Integer, primary_key=True)
     student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     program_id = db.Column(db.Integer, db.ForeignKey('internship_program.id'), nullable=True)
@@ -92,6 +97,7 @@ class Internship(db.Model):
 
 
 class DailyLog(db.Model):
+    # staj gunlugu
     id = db.Column(db.Integer, primary_key=True)
     student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     student_name = db.Column(db.String(100))
