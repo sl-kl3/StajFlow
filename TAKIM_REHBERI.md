@@ -355,20 +355,25 @@ Admin **okula kayitli mi** bilgisini girer. Ogrenci **staj basvurusuna hazir dos
 3. Ogrenci tekrar girince profil **dolu gorunur** (ana sayfa)
 4. Basvuru yapinca danisman **ogrenci adi, no, bolum** gorur (Basvuru Onayi ekrani)
 
-**Profil bilgisi NEREDE gorunuyor? (durust tablo)**
+**Profil bilgisi NEREDE gorunuyor?**
 
 | Bilgi | Ogrenci gorur | Danisman gorur | Admin gorur |
 |-------|---------------|----------------|-------------|
-| Ad, ogrenci no | Evet (profil) | Evet (basvuru listesi) | Evet (kullanici listesi) |
-| Bolum | Evet | Evet (basvuru listesi) | Evet |
-| GANO, deneyim, telefon | Evet (profil) | **Su an ekranda yok** | **Su an ekranda yok** |
-| CV / belgeler | Evet (profil linki) | Dosya yuklendiyse erisebilir | Evet |
+| Ad, ogrenci no | Evet (profil) | Evet (basvuru onayi) | Evet (kullanici listesi) |
+| Bolum | Evet | Evet (basvuru onayi) | Evet |
+| GANO, telefon | Evet (profil) | Evet (basvuru onayi) | Evet (kullanici listesinde GANO) |
+| Deneyim | Evet (profil) | Evet (basvuru onayinda ozet) | — |
+| CV / belgeler | Evet (profil linki) | Evet (basvuru onayinda CV linki) | — |
 
-**Hoca "GANO nerede gorunuyor?" derse (Mine):**
-> "Veritabaninda kayitli. Danisman ekraninda henuz gostermiyoruz — demo kapsaminda basvuru listesinde ad, no ve bolum yeterli sandik. Ileride danisman paneline GANO ve CV linki eklenebilir."
+**Profilin faydasi ne? (hoca sorarsa — Mine / Salih):**
+> "Ogrenci staj basvuru dosyasini dolduruyor. Danisman basvuruyu onaylarken GANO, deneyim ve CV'yi goruyor — karar versin diye. Admin kullanici listesinde GANO'yu gorebiliyor."
 
-**Hoca "profil neden var admin zaten ekledi?" derse (Mine):**
-> "Admin sadece hesap aciyor — kim oldugunu sisteme tanimlatiyor. Profil ogrencinin staj basvuru bilgileri; UBYS'de de ogrenci baz bilgileri vardir, detaylari kendisi tamamlar veya gunceller."
+**"Profili kaydet" adim adim:**
+1. Bilgiler `user` tablosuna yazilir
+2. CV `instance/uploads/` + `student_document` tablosuna
+3. Ogrenci ana sayfada dolu gorur
+4. Basvuru yapinca danisman **Basvuru Onayi** ekraninda profil ozeti + CV linki cikar
+5. Admin **Kullanicilar** listesinde GANO sutununu gorur
 
 ---
 

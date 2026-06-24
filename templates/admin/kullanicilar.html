@@ -36,7 +36,7 @@
     <h2><i class="ti ti-users"></i> Kullanıcı Listesi</h2>
     <div class="table-wrap">
         <table>
-            <thead><tr><th>Ad</th><th>E-posta</th><th>Rol</th><th>Bölüm</th><th></th></tr></thead>
+            <thead><tr><th>Ad</th><th>E-posta</th><th>Rol</th><th>Bölüm</th><th>GANO</th><th></th></tr></thead>
             <tbody>
                 {% for user in users %}
                 <tr>
@@ -48,6 +48,7 @@
                         {% else %}Öğrenci{% endif %}
                     </td>
                     <td>{{ user.department or '—' }}</td>
+                    <td>{% if user.role == 'ogrenci' and user.gpa %}{{ user.gpa }}{% else %}—{% endif %}</td>
                     <td>
                         {% if user.id != current_user.id %}
                         <form method="POST" action="{{ url_for('admin_delete_user', user_id=user.id) }}" class="inline-form" onsubmit="return confirm('Silinsin mi?');">

@@ -14,6 +14,20 @@
                         {% if a.student and a.student.student_no %}
                         <span class="sub">{{ a.student.student_no }} · {{ a.student.department or '' }}</span>
                         {% endif %}
+                        {% if a.student %}
+                        <span class="sub">
+                            {% if a.student.gpa %}GANO: {{ a.student.gpa }}{% endif %}
+                            {% if a.student.phone %} · {{ a.student.phone }}{% endif %}
+                        </span>
+                        {% if a.student.experience %}
+                        <span class="sub">{{ a.student.experience[:120] }}{% if a.student.experience|length > 120 %}…{% endif %}</span>
+                        {% endif %}
+                        {% for d in a.student.documents if d.doc_type == 'cv' %}
+                        <a class="doc-link" href="{{ url_for('uploaded_file', filename=d.filename) }}" target="_blank">
+                            <i class="ti ti-file"></i> CV: {{ d.original_name }}
+                        </a>
+                        {% endfor %}
+                        {% endif %}
                     </div>
                 </div>
                 <div class="approval-detail">
